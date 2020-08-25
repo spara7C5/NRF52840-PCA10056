@@ -69,5 +69,5 @@ dkms.conf
 #folders
 /pca10100/*
 /pca10040/*
-
+/pca10056/blank/ses/Output/*
 
