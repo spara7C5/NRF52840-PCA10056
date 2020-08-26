@@ -83,7 +83,7 @@
 
 
 nrf_drv_uart_t UARTE_inst0=NRF_DRV_UART_INSTANCE(0);
-nrf_drv_uart_t UARTE_inst1=NRF_DRV_UART_INSTANCE(1);
+//nrf_drv_uart_t UARTE_inst1=NRF_DRV_UART_INSTANCE(1);
 
 
 void uart_error_handle(app_uart_evt_t * p_event)
@@ -112,129 +112,41 @@ UBaseType_t stackwater;
 
 
 
-#include "lwgsm/lwgsm_includes.h"
+#include "lwgsm/lwgsm.h"
+#include "sim_manager.h"
+#include "network_utils.h"
+#include "sms_send_receive.h"
+
+static lwgsmr_t lwgsm_callback_func(lwgsm_evt_t* evt);
+
 #if !LWGSM_CFG_SMS || !LWGSM_CFG_CALL
 #error "SMS & CALL must be enabled to run this example"
 #endif /* !LWGSM_CFG_SMS || !LWGSM_CFG_CALL */
 
-static lwgsmr_t call_sms_evt_func(lwgsm_evt_t* evt);
+
 
 /**
- * \brief           SMS entry
- */
-static lwgsm_sms_entry_t
-sms_entry;
-
-/**
- * \brief           Start CALL & SMS combined example
- */
-void
-call_sms_start(void) {
-    /* Add custom callback */
-    lwgsm_evt_register(call_sms_evt_func);
-
-    /* First enable SMS functionality */
-    if (lwgsm_sms_enable(NULL, NULL, 1) == lwgsmOK) {
-        printf("SMS enabled. Send new SMS from your phone to device.\r\n");
-    } else {
-        printf("Cannot enable SMS functionality!\r\n");
-    }
-
-    /* Then enable call functionality */
-    if (lwgsm_call_enable(NULL, NULL, 1) == lwgsmOK) {
-        printf("Call enabled. You may now take your phone and call modem\r\n");
-    } else {
-        printf("Cannot enable call functionality!\r\n");
-    }
-
-    /* Now send SMS from phone to device */
-    printf("Start by sending SMS message or call device...\r\n");
-}
-
-/**
- * \brief           Event function for received SMS or calls
- * \param[in]       evt: GSM event
+ * \brief           Event callback function for GSM stack
+ * \param[in]       evt: Event information with data
  * \return          \ref lwgsmOK on success, member of \ref lwgsmr_t otherwise
  */
 static lwgsmr_t
-call_sms_evt_func(lwgsm_evt_t* evt) {
+lwgsm_callback_func(lwgsm_evt_t* evt) {
     switch (lwgsm_evt_get_type(evt)) {
-        case LWGSM_EVT_SMS_READY: {               /* SMS is ready notification from device */
-            printf("SIM device SMS service is ready!\r\n");
-            break;
-        }
-        case LWGSM_EVT_SMS_RECV: {                /* New SMS received indicator */
-            lwgsmr_t res;
+        case LWGSM_EVT_INIT_FINISH: printf("Library initialized!\r\n"); break;
+        /* Process and print registration change */
+        case LWGSM_EVT_NETWORK_REG_CHANGED: network_utils_process_reg_change(evt); break;
+        /* Process current network operator */
+        case LWGSM_EVT_NETWORK_OPERATOR_CURRENT: network_utils_process_curr_operator(evt); break;
+        /* Process signal strength */
+        case LWGSM_EVT_SIGNAL_STRENGTH: network_utils_process_rssi(evt); break;
 
-            printf("New SMS received!\r\n");    /* Notify user */
+        /* Other user events here... */
 
-            /* Try to read SMS */
-            res = lwgsm_sms_read(lwgsm_evt_sms_recv_get_mem(evt), lwgsm_evt_sms_recv_get_pos(evt), &sms_entry, 1, NULL, NULL, 0);
-            if (res == lwgsmOK) {
-                printf("SMS read in progress!\r\n");
-            } else {
-                printf("Cannot start SMS read procedure!\r\n");
-            }
-            break;
-        }
-        case LWGSM_EVT_SMS_READ: {                /* SMS read event */
-            lwgsm_sms_entry_t* entry = lwgsm_evt_sms_read_get_entry(evt);
-            if (lwgsm_evt_sms_read_get_result(evt) == lwgsmOK && entry != NULL) {
-                /* Print SMS data */
-                printf("SMS read. From: %s, content: %s\r\n",
-                       entry->number, entry->data
-                      );
-
-                /* Try to send SMS back */
-                if (lwgsm_sms_send(entry->number, entry->data, NULL, NULL, 0) == lwgsmOK) {
-                    printf("SMS send in progress!\r\n");
-                } else {
-                    printf("Cannot start SMS send procedure!\r\n");
-                }
-
-                /* Delete SMS from device memory */
-                lwgsm_sms_delete(entry->mem, entry->pos, NULL, NULL, 0);
-            }
-            break;
-        }
-        case LWGSM_EVT_SMS_SEND: {                /* SMS send event */
-            if (lwgsm_evt_sms_send_get_result(evt) == lwgsmOK) {
-                printf("SMS has been successfully sent!\r\n");
-            } else {
-                printf("SMS has not been sent successfully!\r\n");
-            }
-            break;
-        }
-
-        case LWGSM_EVT_CALL_READY: {              /* Call is ready notification from device */
-            printf("SIM device Call service is ready!\r\n");
-            break;
-        }
-        case LWGSM_EVT_CALL_CHANGED: {
-            const lwgsm_call_t* call = lwgsm_evt_call_changed_get_call(evt);
-            if (call->state == LWGSM_CALL_STATE_INCOMING) {   /* On incoming call */
-                lwgsm_call_hangup(NULL, NULL, 0); /* Hangup call */
-                lwgsm_sms_send(call->number, "Cannot answer call. Please send SMS\r\n", NULL, NULL, 0);
-            }
-            break;
-        }
-        default:
-            break;
+        default: break;
     }
-
     return lwgsmOK;
 }
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -255,10 +167,33 @@ call_sms_evt_func(lwgsm_evt_t* evt) {
  */
 
  char mex[]="DETECTED\n";
- char a='a';
+ char a='X';
  int b='0';
 static void led_toggle_task_function (void * pvParameter)
 {
+
+    while(1);
+    printf("Starting GSM application!\r\n");
+
+    /* Initialize GSM with default callback function */
+    if (lwgsm_init(lwgsm_callback_func, 1) != lwgsmOK) {
+        printf("Cannot initialize LwGSM\r\n");
+        while (1) {}
+    }
+
+  /* Configure device by unlocking SIM card */
+    if (configure_sim_card()) {
+        printf("SIM card configured. Adding delay to stabilize SIM card.\r\n");
+        lwgsm_delay(10000);
+    } else {
+        printf("Cannot configure SIM card! Is it inserted, pin valid and not under PUK? Closing down...\r\n");
+        while (1) { lwgsm_delay(1000); }
+    }
+
+
+
+
+
 UNUSED_PARAMETER(pvParameter);
 
     printf("press \"e\" to start Task Toggle LED\n");
@@ -273,7 +208,7 @@ UNUSED_PARAMETER(pvParameter);
 //      nrf_delay_ms(1000);
 //      cnt++;
    
-   (void)nrf_drv_uart_tx(&UARTE_inst0, &a, 1);
+   
     vTaskDelay(500);
     
     }
@@ -349,8 +284,9 @@ void bsp_ext_init(void){
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 
-static char rx_buffer[1];
-static char tx_buffer[1];
+static char rx_buffer[10];
+static char sec_buffer[1];
+int cnt=0;
 
 static void uart_drv_event_handler(nrf_drv_uart_event_t * p_event, void* p_context)
 {
@@ -363,11 +299,10 @@ static void uart_drv_event_handler(nrf_drv_uart_event_t * p_event, void* p_conte
             // If 0, then this is a RXTO event with no new bytes.
             if(p_event->data.rxtx.bytes == 1)
             {
-               
+               rx_buffer[cnt++]=p_event->data.rxtx.p_data[0];
                // A new start RX is needed to continue to receive data
-              (void)nrf_drv_uart_rx(&UARTE_inst0, &a, 1);
-              (void)nrf_drv_uart_tx(&UARTE_inst0, &a, 1);
-               break;
+              (void)nrf_drv_uart_rx(&UARTE_inst0, &sec_buffer[0], 1);
+              
             }
 
 
@@ -377,7 +312,7 @@ static void uart_drv_event_handler(nrf_drv_uart_event_t * p_event, void* p_conte
         case NRF_DRV_UART_EVT_ERROR:
             app_uart_event.evt_type                 = APP_UART_COMMUNICATION_ERROR;
             app_uart_event.data.error_communication = p_event->data.error.error_mask;
-            (void)nrf_drv_uart_rx(&UARTE_inst0, rx_buffer, 1);
+            //(void)nrf_drv_uart_rx(&UARTE_inst0, rx_buffer, 1);
             
             break;
 
@@ -410,7 +345,7 @@ static void uart_drv_event_handler(nrf_drv_uart_event_t * p_event, void* p_conte
       config.pseltxd = TX_PIN_NUMBER;
       UARTE_inst0.inst_idx=1;
       err_code=nrf_drv_uart_init(&UARTE_inst0,&config,uart_drv_event_handler);
-      (void)nrf_drv_uart_rx(&UARTE_inst0, rx_buffer, 1);
+      (void)nrf_drv_uart_rx(&UARTE_inst0, &sec_buffer[0], 1);
       APP_ERROR_CHECK(err_code);
       //NRFX_LOG_WARNING("Hello");
    }
@@ -433,9 +368,9 @@ static void uart_drv_event_handler(nrf_drv_uart_event_t * p_event, void* p_conte
       config.pselrxd = MODEM_RX;
       config.pseltxd = MODEM_TX;
       //UARTE_inst1.uarte.drv_inst_idx=1;
-      err_code=nrf_drv_uart_init(&UARTE_inst1,&config,uart_drv_event_handler);
-      (void)nrf_drv_uart_rx(&UARTE_inst1, rx_buffer, 1);
-      APP_ERROR_CHECK(err_code);
+//      err_code=nrf_drv_uart_init(&UARTE_inst1,&config,uart_drv_event_handler);
+//      (void)nrf_drv_uart_rx(&UARTE_inst1, rx_buffer, 1);
+//      APP_ERROR_CHECK(err_code);
 
    }
 
@@ -464,8 +399,9 @@ int main(void)
     bsp_ext_init();
     uart_tool_init();
     uart_modem_init();
-    call_sms_start();
-
+    char test[20]="AT&V\r";
+    (void)nrf_drv_uart_tx(&UARTE_inst0, test, 11);
+    
     char cnt=0;
  
     /* Create task for LED0 blinking with priority set to 2 */

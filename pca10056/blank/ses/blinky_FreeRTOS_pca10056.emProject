@@ -50,7 +50,9 @@
     <folder Name="Third Parties">
       <file file_name="../../../../../../external/freertos/source/croutine.c" />
       <file file_name="../../../../../../external/freertos/source/event_groups.c" />
-      <file file_name="../../../../../../external/freertos/source/portable/MemMang/heap_1.c" />
+      <file file_name="../../../../../../external/freertos/source/portable/MemMang/heap_1.c">
+        <configuration Name="Debug" build_exclude_from_build="Yes" />
+      </file>
       <file file_name="../../../../../../external/freertos/source/list.c" />
       <file file_name="../../../../../../external/freertos/portable/GCC/nrf52/port.c" />
       <file file_name="../../../../../../external/freertos/portable/CMSIS/nrf52/port_cmsis.c" />
@@ -59,6 +61,7 @@
       <file file_name="../../../../../../external/freertos/source/stream_buffer.c" />
       <file file_name="../../../../../../external/freertos/source/tasks.c" />
       <file file_name="../../../../../../external/freertos/source/timers.c" />
+      <file file_name="../../../../../../external/freertos/source/portable/MemMang/heap_4.c" />
     </folder>
     <folder Name="nRF_Libraries">
       <file file_name="../../../../../../components/libraries/button/app_button.c" />
@@ -94,8 +97,20 @@
       <file file_name="../../../../../../components/libraries/bsp/bsp.c" />
     </folder>
     <folder Name="Application">
-      <file file_name="../../../main.c" />
-      <file file_name="../config/sdk_config.h" />
+      <file file_name="main.c" />
+      <file file_name="sdk_config.h" />
+      <file file_name="lwgsm/src/system/lwgsm_ll_template.c">
+        <configuration Name="Debug" build_exclude_from_build="No" />
+      </file>
+      <file file_name="sim_manager.h" />
+      <file file_name="sms_send_receive.h" />
+      <file file_name="E:/Users/StefanoParacchino/Devel/GIT/lwgsm/snippets/sim_manager.c" />
+      <file file_name="E:/Users/StefanoParacchino/Devel/GIT/lwgsm/snippets/sms_send_receive.c" />
+      <file file_name="network_utils.h" />
+      <file file_name="E:/Users/StefanoParacchino/Devel/GIT/lwgsm/snippets/network_utils.c" />
+      <file file_name="E:/Users/StefanoParacchino/Devel/GIT/lwgsm/third_party/embedded-libs/FreeRTOS/CMSIS_RTOS/cmsis_os.c" />
+      <file file_name="E:/Users/StefanoParacchino/Devel/GIT/lwgsm/lwgsm/src/system/lwgsm_sys_template.c" />
+      <file file_name="cmsis_os.h" />
     </folder>
     <folder Name="None">
       <file file_name="../../../../../../modules/nrfx/mdk/ses_startup_nrf52840.s" />
@@ -107,11 +122,116 @@
       c_user_include_directories="../../../../../../components/libraries/uart;../../../../../../components/libraries/fifo;../../../../../../components/libraries/log" />
     <configuration
       Name="Debug"
-      c_user_include_directories="../../../../../../components/libraries/uart;../../../../../../components/libraries/fifo;../../../../../../components/libraries/delay;../../../../../../components/libraries/log;../../../../../../external/segger_rtt;../../../../../../integration/nrfx/legacy;../../../../../../modules/nrfx/drivers/include" />
+      c_user_include_directories="../../../../../../components/libraries/uart;../../../../../../components/libraries/fifo;../../../../../../components/libraries/delay;../../../../../../components/libraries/log;../../../../../../external/segger_rtt;../../../../../../integration/nrfx/legacy;../../../../../../modules/nrfx/drivers/include;lwgsm/src/include;lwgsm/src/include/system/port/template;." />
     <folder Name="nRF_Segger_RTT">
       <file file_name="../../../../../../external/segger_rtt/SEGGER_RTT.c" />
       <file file_name="../../../../../../external/segger_rtt/SEGGER_RTT_printf.c" />
       <file file_name="../../../../../../external/segger_rtt/SEGGER_RTT_Syscalls_SES.c" />
+    </folder>
+    <folder Name="SIM7000">
+      <folder Name="src">
+        <folder Name="api">
+          <file file_name="lwgsm/src/api/lwgsm_netconn.c" />
+          <file file_name="lwgsm/src/api/lwgsm_network_api.c" />
+        </folder>
+        <folder Name="include">
+          <folder Name="lwgsm">
+            <file file_name="lwgsm/src/include/lwgsm/lwgsm.h" />
+            <file file_name="lwgsm/src/include/lwgsm/lwgsm_buff.h" />
+            <file file_name="lwgsm/src/include/lwgsm/lwgsm_call.h" />
+            <file file_name="lwgsm/src/include/lwgsm/lwgsm_conn.h" />
+            <file file_name="lwgsm/src/include/lwgsm/lwgsm_debug.h" />
+            <file file_name="lwgsm/src/include/lwgsm/lwgsm_device_info.h" />
+            <file file_name="lwgsm/src/include/lwgsm/lwgsm_evt.h" />
+            <file file_name="lwgsm/src/include/lwgsm/lwgsm_ftp.h" />
+            <file file_name="lwgsm/src/include/lwgsm/lwgsm_http.h" />
+            <file file_name="lwgsm/src/include/lwgsm/lwgsm_includes.h" />
+            <file file_name="lwgsm/src/include/lwgsm/lwgsm_input.h" />
+            <file file_name="lwgsm/src/include/lwgsm/lwgsm_int.h" />
+            <file file_name="lwgsm/src/include/lwgsm/lwgsm_mem.h" />
+            <file file_name="lwgsm/src/include/lwgsm/lwgsm_memories.h" />
+            <file file_name="lwgsm/src/include/lwgsm/lwgsm_models.h" />
+            <file file_name="lwgsm/src/include/lwgsm/lwgsm_netconn.h" />
+            <file file_name="lwgsm/src/include/lwgsm/lwgsm_network.h" />
+            <file file_name="lwgsm/src/include/lwgsm/lwgsm_network_api.h" />
+            <file file_name="lwgsm/src/include/lwgsm/lwgsm_operator.h" />
+            <file file_name="lwgsm/src/include/lwgsm/lwgsm_opt.h" />
+            <file file_name="lwgsm/src/include/lwgsm/lwgsm_opts.h" />
+            <file file_name="lwgsm/src/include/lwgsm/lwgsm_parser.h" />
+            <file file_name="lwgsm/src/include/lwgsm/lwgsm_pbuf.h" />
+            <file file_name="lwgsm/src/include/lwgsm/lwgsm_phonebook.h" />
+            <file file_name="lwgsm/src/include/lwgsm/lwgsm_ping.h" />
+            <file file_name="lwgsm/src/include/lwgsm/lwgsm_private.h" />
+            <file file_name="lwgsm/src/include/lwgsm/lwgsm_sim.h" />
+            <file file_name="lwgsm/src/include/lwgsm/lwgsm_sms.h" />
+            <file file_name="lwgsm/src/include/lwgsm/lwgsm_threads.h" />
+            <file file_name="lwgsm/src/include/lwgsm/lwgsm_timeout.h" />
+            <file file_name="lwgsm/src/include/lwgsm/lwgsm_typedefs.h" />
+            <file file_name="lwgsm/src/include/lwgsm/lwgsm_unicode.h" />
+            <file file_name="lwgsm/src/include/lwgsm/lwgsm_ussd.h" />
+            <file file_name="lwgsm/src/include/lwgsm/lwgsm_utils.h" />
+            <folder Name="apps">
+              <file file_name="lwgsm/src/include/lwgsm/apps/lwgsm_apps.h" />
+              <file file_name="lwgsm/src/include/lwgsm/apps/lwgsm_mqtt_client.h" />
+              <file file_name="lwgsm/src/include/lwgsm/apps/lwgsm_mqtt_client_api.h" />
+              <file file_name="lwgsm/src/include/lwgsm/apps/lwgsm_mqtt_client_evt.h" />
+            </folder>
+          </folder>
+          <folder Name="system">
+            <file file_name="lwgsm/src/include/system/lwgsm_ll.h" />
+            <file file_name="lwgsm/src/include/system/lwgsm_sys.h" />
+            <folder Name="port">
+              <folder Name="cmsis_os">
+                <file file_name="lwgsm/src/include/system/port/cmsis_os/lwgsm_sys_port.h" />
+              </folder>
+              <folder Name="template">
+                <file file_name="lwgsm/src/include/system/port/template/lwgsm_sys_port.h" />
+              </folder>
+              <folder Name="win32">
+                <file file_name="lwgsm/src/include/system/port/win32/lwgsm_sys_port.h" />
+              </folder>
+            </folder>
+          </folder>
+        </folder>
+        <folder Name="lwgsm">
+          <file file_name="lwgsm/src/lwgsm/lwgsm.c" />
+          <file file_name="lwgsm/src/lwgsm/lwgsm_buff.c" />
+          <file file_name="lwgsm/src/lwgsm/lwgsm_call.c" />
+          <file file_name="lwgsm/src/lwgsm/lwgsm_conn.c" />
+          <file file_name="lwgsm/src/lwgsm/lwgsm_debug.c" />
+          <file file_name="lwgsm/src/lwgsm/lwgsm_device_info.c" />
+          <file file_name="lwgsm/src/lwgsm/lwgsm_evt.c" />
+          <file file_name="lwgsm/src/lwgsm/lwgsm_ftp.c" />
+          <file file_name="lwgsm/src/lwgsm/lwgsm_http.c" />
+          <file file_name="lwgsm/src/lwgsm/lwgsm_input.c" />
+          <file file_name="lwgsm/src/lwgsm/lwgsm_int.c" />
+          <file file_name="lwgsm/src/lwgsm/lwgsm_mem.c" />
+          <file file_name="lwgsm/src/lwgsm/lwgsm_network.c" />
+          <file file_name="lwgsm/src/lwgsm/lwgsm_operator.c" />
+          <file file_name="lwgsm/src/lwgsm/lwgsm_parser.c" />
+          <file file_name="lwgsm/src/lwgsm/lwgsm_pbuf.c" />
+          <file file_name="lwgsm/src/lwgsm/lwgsm_phonebook.c" />
+          <file file_name="lwgsm/src/lwgsm/lwgsm_ping.c" />
+          <file file_name="lwgsm/src/lwgsm/lwgsm_sim.c" />
+          <file file_name="lwgsm/src/lwgsm/lwgsm_sms.c" />
+          <file file_name="lwgsm/src/lwgsm/lwgsm_threads.c" />
+          <file file_name="lwgsm/src/lwgsm/lwgsm_timeout.c" />
+          <file file_name="lwgsm/src/lwgsm/lwgsm_unicode.c" />
+          <file file_name="lwgsm/src/lwgsm/lwgsm_ussd.c" />
+          <file file_name="lwgsm/src/lwgsm/lwgsm_utils.c" />
+        </folder>
+        <folder Name="system">
+          <file file_name="lwgsm/src/system/lwgsm_ll_stm32.c" />
+          <file file_name="lwgsm/src/system/lwgsm_ll_stm32f429zi_nucleo.c" />
+          <file file_name="lwgsm/src/system/lwgsm_ll_template.c" />
+          <file file_name="lwgsm/src/system/lwgsm_ll_win32.c" />
+          <file file_name="lwgsm/src/system/lwgsm_mem_lwmem.c" />
+          <file file_name="lwgsm/src/system/lwgsm_sys_cmsis_os.c" />
+          <file file_name="lwgsm/src/system/lwgsm_sys_template.c" />
+          <file file_name="lwgsm/src/system/lwgsm_sys_win32.c" />
+          <configuration Name="Debug" build_exclude_from_build="Yes" />
+        </folder>
+      </folder>
     </folder>
   </project>
   <configuration

@@ -2,6 +2,16 @@
 <session>
  <Bookmarks/>
  <Breakpoints groups="Breakpoints" active_group="Breakpoints">
+  <BreakpointListItem trigger="" line="248" counter="0" hardwareBreakpoint="" isFunctionBreakpoint="false" action="" expression="" group="Breakpoints" type="Breakpoint" state="4" filename="E:/Users/StefanoParacchino/Devel/GIT/lwgsm/third_party/embedded-libs/FreeRTOS/CMSIS_RTOS/cmsis_os.c" useHWbreakpoint="false"/>
+  <BreakpointListItem trigger="" line="75" counter="0" hardwareBreakpoint="" isFunctionBreakpoint="false" action="" expression="" group="Breakpoints" type="Breakpoint" state="4" filename="Devel/GIT/lwgsm/third_party/embedded-libs/FreeRTOS/portable/MemMang/heap_2.c" useHWbreakpoint="false"/>
+  <BreakpointListItem trigger="" line="53" counter="0" hardwareBreakpoint="" isFunctionBreakpoint="false" action="" expression="" group="Breakpoints" type="Breakpoint" state="2" filename="lwgsm/src/system/lwgsm_ll_template.c" useHWbreakpoint="false"/>
+  <BreakpointListItem trigger="" line="382" counter="0" hardwareBreakpoint="" isFunctionBreakpoint="false" action="" expression="" group="Breakpoints" type="Breakpoint" state="4" filename="../../../main.c" useHWbreakpoint="false"/>
+  <BreakpointListItem trigger="" line="402" counter="0" hardwareBreakpoint="" isFunctionBreakpoint="false" action="" expression="" group="Breakpoints" type="Breakpoint" state="4" filename="main.c" useHWbreakpoint="false"/>
+  <BreakpointListItem trigger="" line="467" counter="0" hardwareBreakpoint="" isFunctionBreakpoint="false" action="" expression="" group="Breakpoints" type="Breakpoint" state="4" filename="../../../main.c" useHWbreakpoint="false"/>
+  <BreakpointListItem trigger="" line="518" counter="0" hardwareBreakpoint="" isFunctionBreakpoint="false" action="" expression="" group="Breakpoints" type="Breakpoint" state="2" filename="../../../../../../integration/nrfx/legacy/nrf_drv_uart.h" useHWbreakpoint="false"/>
+  <BreakpointListItem trigger="" line="805" counter="0" hardwareBreakpoint="" isFunctionBreakpoint="false" action="" expression="" group="Breakpoints" type="Breakpoint" state="2" filename="../../../../../../external/fprintf/nrf_fprintf_format.c" useHWbreakpoint="false"/>
+  <BreakpointListItem trigger="" line="619" counter="0" hardwareBreakpoint="" isFunctionBreakpoint="false" action="" expression="" group="Breakpoints" type="Breakpoint" state="4" filename="../config/sdk_config.h" useHWbreakpoint="false"/>
+  <BreakpointListItem trigger="" line="42" counter="0" hardwareBreakpoint="" isFunctionBreakpoint="false" action="" expression="" group="Breakpoints" type="Breakpoint" state="4" filename="SimCom.c" useHWbreakpoint="false"/>
   <Exceptions set="MemManage;UsageFault_Coprocessor;UsageFault_CheckingError;UsageFault_StateError;BusFault;ExceptionEntryReturnFault;HardFault"/>
  </Breakpoints>
  <ExecutionProfileWindow/>
@@ -28,8 +38,19 @@
   <ProjectSessionItem path="mysolution"/>
   <ProjectSessionItem path="mysolution;first"/>
   <ProjectSessionItem path="mysolution;first;Application"/>
-  <ProjectSessionItem path="mysolution;first;Board Definition"/>
   <ProjectSessionItem path="mysolution;first;nRF_Drivers"/>
+  <ProjectSessionItem path="mysolution;first;nRF_Libraries"/>
+  <ProjectSessionItem path="mysolution;first;SIM7000"/>
+  <ProjectSessionItem path="mysolution;first;SIM7000;src"/>
+  <ProjectSessionItem path="mysolution;first;SIM7000;src;api"/>
+  <ProjectSessionItem path="mysolution;first;SIM7000;src;include"/>
+  <ProjectSessionItem path="mysolution;first;SIM7000;src;include;lwgsm"/>
+  <ProjectSessionItem path="mysolution;first;SIM7000;src;include;system"/>
+  <ProjectSessionItem path="mysolution;first;SIM7000;src;include;system;port"/>
+  <ProjectSessionItem path="mysolution;first;SIM7000;src;include;system;port;cmsis_os"/>
+  <ProjectSessionItem path="mysolution;first;SIM7000;src;include;system;port;template"/>
+  <ProjectSessionItem path="mysolution;first;SIM7000;src;lwgsm"/>
+  <ProjectSessionItem path="mysolution;first;SIM7000;src;system"/>
  </Project>
  <Register1>
   <RegisterWindow visibleNodes="CPU - Current Context/r0;CPU - Current Context/r1;CPU - Current Context/r2;CPU - Current Context/r3;CPU - Current Context/r4;CPU - Current Context/r5;CPU - Current Context/r6;CPU - Current Context/r7;CPU - Current Context/r8;CPU - Current Context/r9;CPU - Current Context/r10;CPU - Current Context/r11;CPU - Current Context/r12;CPU - Current Context/sp(r13);CPU - Current Context/lr(r14);CPU - Current Context/pc(r15);CPU - Current Context/apsr;CPU/r0;CPU/r1;CPU/r2;CPU/r3;CPU/r4;CPU/r5;CPU/r6;CPU/r7;CPU/r8;CPU/r9;CPU/r10;CPU/r11;CPU/r12;CPU/sp(r13);CPU/lr(r14);CPU/pc(r15);CPU/xpsr;CPU/msp;CPU/psp;CPU/cfbp;CPU/internal" binaryNodes="" asciiNodes="" openNodes="CPU - Current Context" name="blinky_FreeRTOS_pca10056" decimalNodes="" octalNodes="" unsignedNodes=""/>
@@ -56,6 +77,20 @@
  <Watch1>
   <Watches active="1" update="Never">
    <Watchpoint expression="stackwater" name="stackwater" radix="11" linenumber="0" filename="../ses"/>
+   <Watchpoint expression="p_instance" name="p_instance" radix="-1" linenumber="411" filename="../../../../../../modules/nrfx/drivers/src/nrfx_uarte.c"/>
+   <Watchpoint expression="sl_send_lockHandle" name="sl_send_lockHandle" radix="-1" linenumber="32" filename="ServiceLayer.c"/>
+   <Watchpoint expression="sl_send_buf" name="sl_send_buf" radix="1" linenumber="40" filename="ServiceLayer.c"/>
+   <Watchpoint expression="dl_send_buf" name="dl_send_buf" radix="1" linenumber="137" filename="DataLinkLayer.c"/>
+   <Watchpoint expression="ph_send_queue" name="ph_send_queue" radix="-1" linenumber="55" filename="PhysicalLayer.c"/>
+   <Watchpoint expression="LWGSM_CFG_DBG_INIT | LWGSM_DBG_LVL_SEVERE | LWGSM_DBG_TYPE_TRACE" name="LWGSM_CFG_DBG_INIT | LWGSM_DBG_LVL_SEVERE | LWGSM_DBG_TYPE_TRACE" radix="2" linenumber="104" filename="lwgsm/src/lwgsm/lwgsm.c"/>
+   <Watchpoint expression="LWGSM_DBG_ON" name="LWGSM_DBG_ON" radix="2" linenumber="98" filename="lwgsm/src/include/lwgsm/lwgsm_debug.h"/>
+   <Watchpoint expression="UART_ENABLED" name="UART_ENABLED" radix="-1" linenumber="0" filename=""/>
+   <Watchpoint expression="NRF_DRV_UART_WITH_UARTE" name="NRF_DRV_UART_WITH_UARTE" radix="-1" linenumber="456" filename="../../../../../../integration/nrfx/legacy/nrf_drv_uart.h"/>
+   <Watchpoint expression="UARTE_PRESENT" name="UARTE_PRESENT" radix="-1" linenumber="46" filename="../../../../../../integration/nrfx/legacy/nrf_drv_uart.h"/>
+   <Watchpoint expression="NRFX_UARTE_ENABLED" name="NRFX_UARTE_ENABLED" radix="-1" linenumber="46" filename="../../../../../../integration/nrfx/legacy/nrf_drv_uart.h"/>
+   <Watchpoint expression="(UART_ENABLED &amp;&amp; (NRFX_UARTE0_ENABLED || NRFX_UARTE1_ENABLED))" name="(UART_ENABLED &amp;&amp; (NRFX_UARTE0_ENABLED || NRFX_UARTE1_ENABLED))" radix="16" linenumber="1288" filename="../../../../../../integration/nrfx/legacy/apply_old_config.h"/>
+   <Watchpoint expression="NRFX_UARTE1_ENABLED" name="NRFX_UARTE1_ENABLED" radix="16" linenumber="1299" filename="../../../../../../integration/nrfx/legacy/apply_old_config.h"/>
+   <Watchpoint expression="NRFX_UARTE0_ENABLED" name="NRFX_UARTE0_ENABLED" radix="16" linenumber="1288" filename="../../../../../../integration/nrfx/legacy/apply_old_config.h"/>
   </Watches>
  </Watch1>
  <Watch2>
@@ -68,16 +103,26 @@
   <Watches active="0" update="Never"/>
  </Watch4>
  <Files>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="107" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../main.c" selected="0" top="89" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="28" useTextEdit="1" useBinaryEdit="0" left="0" path="E:/Users/StefanoParacchino/AppData/Local/SEGGER/SEGGER Embedded Studio/v3/tools.xml" selected="0" top="10" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="3618" useTextEdit="1" useBinaryEdit="0" left="0" path="../config/sdk_config.h" selected="0" top="3612" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="80" y="499" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../../../../modules/nrfx/drivers/src/nrfx_uarte.c" selected="0" top="472" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="21" y="44" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../../../../modules/nrfx/drivers/src/nrfx_uart.c" selected="1" top="40" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="104" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../../../../modules/nrfx/mdk/ses_startup_nrf_common.s" selected="0" top="83" codecName=""/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="0" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../../../../modules/nrfx/nrfx.h" selected="0" top="34" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="156" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../../../../components/boards/boards.c" selected="0" top="136" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="13" y="86" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../../../../components/boards/pca10056.h" selected="0" top="69" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="476" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../../../../modules/nrfx/hal/nrf_uart.h" selected="0" top="462" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="52" useTextEdit="1" useBinaryEdit="0" left="0" path="lwgsm/src/system/lwgsm_ll_template.c" selected="0" top="33" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="42" y="432" useTextEdit="1" useBinaryEdit="0" left="0" path="lwgsm/src/include/lwgsm/lwgsm_opt.h" selected="0" top="645" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="436" useTextEdit="1" useBinaryEdit="0" left="0" path="lwgsm/src/lwgsm/lwgsm_mem.c" selected="0" top="415" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="0" useTextEdit="1" useBinaryEdit="0" left="0" path="lwgsm/src/include/lwgsm/lwgsm_opts.h" selected="0" top="32" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="77" useTextEdit="1" useBinaryEdit="0" left="0" path="lwgsm/src/include/system/lwgsm_sys.h" selected="0" top="59" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="339" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../../../../modules/nrfx/drivers/src/nrfx_uarte.c" selected="0" top="321" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="45" useTextEdit="1" useBinaryEdit="0" left="0" path="lwgsm/src/include/system/port/cmsis_os/lwgsm_sys_port.h" selected="0" top="19" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="386" useTextEdit="1" useBinaryEdit="0" left="0" path="main.c" selected="0" top="350" codecName=""/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="12" y="127" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../../../../integration/nrfx/legacy/nrf_drv_uart.c" selected="0" top="103" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="25" y="452" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../../../../integration/nrfx/legacy/nrf_drv_uart.h" selected="1" top="439" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="8" y="243" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../../../../modules/nrfx/mdk/nrf52840_peripherals.h" selected="0" top="224" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="1281" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../../../../integration/nrfx/legacy/apply_old_config.h" selected="0" top="1273" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="8" y="3632" useTextEdit="1" useBinaryEdit="0" left="0" path="sdk_config.h" selected="0" top="3607" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="1725" useTextEdit="1" useBinaryEdit="0" left="0" path="lwgsm/src/lwgsm/lwgsm_int.c" selected="0" top="1706" codecName=""/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="8" y="3947" useTextEdit="1" useBinaryEdit="0" left="0" path="../config/sdk_config.h" selected="0" top="3934" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="99" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../../../../components/libraries/util/app_error_weak.c" selected="0" top="80" codecName=""/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="48" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../../../../components/libraries/util/app_error_handler_gcc.c" selected="0" top="23" codecName=""/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="49" y="183" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../../../../modules/nrfx/drivers/src/nrfx_uart.c" selected="0" top="149" codecName=""/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="66" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../../../../modules/nrfx/drivers/include/nrfx_uart.h" selected="0" top="57" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="34" y="86" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../../../../modules/nrfx/drivers/include/nrfx_uarte.h" selected="0" top="70" codecName="Default"/>
  </Files>
- <ARMCrossStudioWindow activeProject="first" fileDialogDefaultFilter="" autoConnectTarget="J-Link" buildConfiguration="Release" sessionSettings="" debugSearchFileMap="" fileDialogInitialDirectory="C:/NORDIC/nRF5_SDK_17.0.0_9d13099/modules/nrfx/drivers/src" debugSearchPath="" autoConnectCapabilities="3711"/>
+ <ARMCrossStudioWindow activeProject="first" fileDialogDefaultFilter="" autoConnectTarget="J-Link" buildConfiguration="Debug" sessionSettings="" debugSearchFileMap="" fileDialogInitialDirectory="C:/NORDIC/nRF5_SDK_17.0.0_9d13099/external/freertos/source/portable/MemMang" debugSearchPath="" autoConnectCapabilities="3711"/>
 </session>
