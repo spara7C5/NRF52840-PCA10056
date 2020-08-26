@@ -69,6 +69,10 @@
 #include "nrf_log_ctrl.h"
 #include "nrf_log_default_backends.h"
 
+#include "PhysicalLayer.h"
+#include "SimCom.h"
+#include "semphr.h"
+
 #if LEDS_NUMBER <= 2
 #error "Board is not equipped with enough amount of LEDs"
 #endif
@@ -103,8 +107,16 @@ void uart_error_handle(app_uart_evt_t * p_event)
 #define TIMER_PERIOD      1000          /**< Timer period. LED1 timer will expire after 1000 ms */
 
 TaskHandle_t  led_toggle_task_handle;   /**< Reference to LED0 toggling FreeRTOS task. */
+TaskHandle_t  modemRX_task_handle;   
+TaskHandle_t  modemTX_task_handle;   
 TimerHandle_t led_toggle_timer_handle;  /**< Reference to LED1 toggling FreeRTOS timer. */
 UBaseType_t stackwater;
+
+
+ extern SemaphoreHandle_t dl_send_lockHandle;
+ extern SemaphoreHandle_t sl_send_lockHandle;
+ extern SemaphoreHandle_t ph_send_lockHandle;
+
 /**@brief LED0 task entry function.
  *
  * @param[in] pvParameter   Pointer that will be used as the parameter for the task.
@@ -121,6 +133,7 @@ UNUSED_PARAMETER(pvParameter);
     while(1){
       b=getchar();
       if ((char)b==0x65) break;
+      vTaskDelay(100);
     }
     printf("Task Toggle LED started\n");
     while(1){
@@ -129,8 +142,9 @@ UNUSED_PARAMETER(pvParameter);
 //      nrf_delay_ms(1000);
 //      cnt++;
    
-   (void)nrf_drv_uart_tx(&UARTE_inst0, &a, 1);
-    vTaskDelay(500);
+   //(void)nrf_drv_uart_tx(&UARTE_inst0, &a, 1);
+    vTaskDelay(1000);
+    sl_send(0,0,"test", 4);
     
     }
     
@@ -205,9 +219,9 @@ void bsp_ext_init(void){
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 
-static char rx_buffer[1];
-static char tx_buffer[1];
-
+ char rx_buffer[1];
+ char tx_buffer[1];
+  extern char ph_receive_it_buf[];
 static void uart_drv_event_handler(nrf_drv_uart_event_t * p_event, void* p_context)
 {
     app_uart_evt_t app_uart_event;
@@ -221,8 +235,9 @@ static void uart_drv_event_handler(nrf_drv_uart_event_t * p_event, void* p_conte
             {
                
                // A new start RX is needed to continue to receive data
-              (void)nrf_drv_uart_rx(&UARTE_inst0, &a, 1);
-              (void)nrf_drv_uart_tx(&UARTE_inst0, &a, 1);
+               ph_receive_intr(*ph_receive_it_buf);
+              
+              //(void)nrf_drv_uart_tx(&UARTE_inst0, &a, 1);
                break;
             }
 
@@ -233,14 +248,13 @@ static void uart_drv_event_handler(nrf_drv_uart_event_t * p_event, void* p_conte
         case NRF_DRV_UART_EVT_ERROR:
             app_uart_event.evt_type                 = APP_UART_COMMUNICATION_ERROR;
             app_uart_event.data.error_communication = p_event->data.error.error_mask;
-            (void)nrf_drv_uart_rx(&UARTE_inst0, rx_buffer, 1);
+            //(void)nrf_drv_uart_rx(&UARTE_inst0, rx_buffer, 1);
             
             break;
 
         case NRF_DRV_UART_EVT_TX_DONE:
-            
-
-//            (void)nrf_drv_uart_tx(&UARTE_inst0, tx_buffer, 1);
+          
+//            
 
 
             break;
@@ -318,20 +332,28 @@ int main(void)
     /* Configure LED-pins as outputs */
     bsp_board_init(BSP_INIT_LEDS);
     bsp_ext_init();
+    dl_send_lockHandle = xSemaphoreCreateMutex();
+    ASSERT(NULL != dl_send_lockHandle);
+    sl_send_lockHandle = xSemaphoreCreateMutex();
+    ASSERT(NULL != sl_send_lockHandle);
+    ph_send_lockHandle = xSemaphoreCreateMutex();
+    ASSERT(NULL != ph_send_lockHandle);
     uart_tool_init();
     uart_modem_init();
-
+    simcom_init(&UARTE_inst1);
 
     char cnt=0;
  
     /* Create task for LED0 blinking with priority set to 2 */
     UNUSED_VARIABLE(xTaskCreate(led_toggle_task_function, "LED0", configMINIMAL_STACK_SIZE +500 , NULL, 2, &led_toggle_task_handle));
+     UNUSED_VARIABLE(xTaskCreate(StartReceiveTask, "MODEMRX", configMINIMAL_STACK_SIZE +500 , NULL, 2, &modemRX_task_handle));
+      UNUSED_VARIABLE(xTaskCreate(StartSendTask, "MODEMTX", configMINIMAL_STACK_SIZE +500 , NULL, 2, &modemTX_task_handle));
 
 
     
     /* Start timer for LED1 blinking */
-    led_toggle_timer_handle = xTimerCreate( "LED1", TIMER_PERIOD, pdTRUE, NULL, led_toggle_timer_callback);
-    UNUSED_VARIABLE(xTimerStart(led_toggle_timer_handle, 0));
+    //led_toggle_timer_handle = xTimerCreate( "LED1", TIMER_PERIOD, pdTRUE, NULL, led_toggle_timer_callback);
+    //UNUSED_VARIABLE(xTimerStart(led_toggle_timer_handle, 0));
 
     /* Activate deep sleep mode */
     SCB->SCR |= SCB_SCR_SLEEPDEEP_Msk;
