@@ -73,7 +73,7 @@
 #error "Board is not equipped with enough amount of LEDs"
 #endif
 /* When UART is used for communication with the host do not use flow control.*/
-#define UART_HWFC APP_UART_FLOW_CONTROL_DISABLED
+#define UART_HWFC APP_UART_FLOW_CONTROL_ENABLED
 
 #define MAX_TEST_DATA_BYTES     (15U)                /**< max number of test bytes to be used for tx and rx. */
 #define UART_TX_BUF_SIZE 256                         /**< UART TX buffer size. */
@@ -288,7 +288,7 @@ static char rx_buffer[10];
 static char sec_buffer[1];
 int cnt=0;
 
-static void uart_drv_event_handler(nrf_drv_uart_event_t * p_event, void* p_context)
+static void uart_event_handler(nrf_drv_uart_event_t * p_event, void* p_context)
 {
     app_uart_evt_t app_uart_event;
     uint32_t err_code;
@@ -301,11 +301,11 @@ static void uart_drv_event_handler(nrf_drv_uart_event_t * p_event, void* p_conte
             {
                rx_buffer[cnt++]=p_event->data.rxtx.p_data[0];
                // A new start RX is needed to continue to receive data
-              (void)nrf_drv_uart_rx(&UARTE_inst0, &sec_buffer[0], 1);
+//              (void)nrf_drv_uart_rx(&UARTE_inst0, &sec_buffer[0], 1);
               
             }
-
-
+            // memcpy(rx_buffer,p_event->data.rxtx.p_data,10);
+            (void)nrf_drv_uart_rx(&UARTE_inst0, &sec_buffer[0], 1);
 
             break;
 
@@ -318,7 +318,7 @@ static void uart_drv_event_handler(nrf_drv_uart_event_t * p_event, void* p_conte
 
         case NRF_DRV_UART_EVT_TX_DONE:
             
-
+          //  __NOP();
 //            (void)nrf_drv_uart_tx(&UARTE_inst0, tx_buffer, 1);
 
 
@@ -343,8 +343,8 @@ static void uart_drv_event_handler(nrf_drv_uart_event_t * p_event, void* p_conte
       config.pselrts = RTS_PIN_NUMBER;
       config.pselrxd = RX_PIN_NUMBER;
       config.pseltxd = TX_PIN_NUMBER;
-      UARTE_inst0.inst_idx=1;
-      err_code=nrf_drv_uart_init(&UARTE_inst0,&config,uart_drv_event_handler);
+      //UARTE_inst0.inst_idx=1;
+      err_code=nrf_drv_uart_init(&UARTE_inst0,&config,uart_event_handler);
       (void)nrf_drv_uart_rx(&UARTE_inst0, &sec_buffer[0], 1);
       APP_ERROR_CHECK(err_code);
       //NRFX_LOG_WARNING("Hello");
@@ -399,11 +399,18 @@ int main(void)
     bsp_ext_init();
     uart_tool_init();
     uart_modem_init();
+
     char test[20]="AT&V\r";
-    (void)nrf_drv_uart_tx(&UARTE_inst0, test, 11);
-    
-    char cnt=0;
+    for(int i=0;i<5;i++){
+      nrf_delay_us(1000);
+      //(void)nrf_drv_uart_tx(&UARTE_inst0, &test[i], 1);
+     }
+    (void)nrf_drv_uart_tx(&UARTE_inst0, &test[0], 5);
+   
  
+    while(1){
+    nrf_delay_ms(100);
+    }
     /* Create task for LED0 blinking with priority set to 2 */
     UNUSED_VARIABLE(xTaskCreate(led_toggle_task_function, "LED0", configMINIMAL_STACK_SIZE +500 , NULL, 2, &led_toggle_task_handle));
 

@@ -734,7 +734,7 @@
 // <4=> Debug 
 
 #ifndef NRF_LOG_DEFAULT_LEVEL
-#define NRF_LOG_DEFAULT_LEVEL 4
+#define NRF_LOG_DEFAULT_LEVEL 2
 #endif
 
 // <q> NRF_LOG_DEFERRED  - Enable deffered logger.
@@ -1954,7 +1954,7 @@
 // <e> UART_CONFIG_LOG_ENABLED - Enables logging in the module.
 //==========================================================
 #ifndef UART_CONFIG_LOG_ENABLED
-#define UART_CONFIG_LOG_ENABLED 1
+#define UART_CONFIG_LOG_ENABLED 0
 #endif
 // <o> UART_CONFIG_LOG_LEVEL  - Default Severity level
  
@@ -1965,7 +1965,7 @@
 // <4=> Debug 
 
 #ifndef UART_CONFIG_LOG_LEVEL
-#define UART_CONFIG_LOG_LEVEL 3
+#define UART_CONFIG_LOG_LEVEL 2
 #endif
 
 // <o> UART_CONFIG_INFO_COLOR  - ANSI escape code prefix.
@@ -3705,7 +3705,7 @@
 // <4=> Debug 
 
 #ifndef NRFX_UARTE_CONFIG_LOG_LEVEL
-#define NRFX_UARTE_CONFIG_LOG_LEVEL 4
+#define NRFX_UARTE_CONFIG_LOG_LEVEL 2
 #endif
 
 // <o> NRFX_UARTE_CONFIG_INFO_COLOR  - ANSI escape code prefix.
@@ -3747,7 +3747,7 @@
 // <e> NRFX_UART_ENABLED - nrfx_uart - UART peripheral driver
 //==========================================================
 #ifndef NRFX_UART_ENABLED
-#define NRFX_UART_ENABLED 1
+#define NRFX_UART_ENABLED 0
 #endif
 // <o> NRFX_UART0_ENABLED - Enable UART0 instance 
 #ifndef NRFX_UART0_ENABLED
@@ -3826,7 +3826,7 @@
 // <4=> Debug 
 
 #ifndef NRFX_UART_CONFIG_LOG_LEVEL
-#define NRFX_UART_CONFIG_LOG_LEVEL 3
+#define NRFX_UART_CONFIG_LOG_LEVEL 2
 #endif
 
 // <o> NRFX_UART_CONFIG_INFO_COLOR  - ANSI escape code prefix.
@@ -3951,7 +3951,7 @@
  
 
 #ifndef UART0_CONFIG_USE_EASY_DMA
-#define UART0_CONFIG_USE_EASY_DMA 0
+#define UART0_CONFIG_USE_EASY_DMA 1
 #endif
 
 // </e>

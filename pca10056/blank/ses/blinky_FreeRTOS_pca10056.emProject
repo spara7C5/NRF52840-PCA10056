@@ -79,7 +79,9 @@
       <file file_name="../../../../../../components/libraries/ringbuf/nrf_ringbuf.c" />
       <file file_name="../../../../../../components/libraries/strerror/nrf_strerror.c" />
       <file file_name="../../../../../../components/libraries/fifo/app_fifo.c" />
-      <file file_name="../../../../../../components/libraries/uart/app_uart_fifo.c" />
+      <file file_name="../../../../../../components/libraries/uart/app_uart_fifo.c">
+        <configuration Name="Debug" build_exclude_from_build="Yes" />
+      </file>
     </folder>
     <folder Name="nRF_Drivers">
       <file file_name="../../../../../../integration/nrfx/legacy/nrf_drv_clock.c" />
