@@ -2,10 +2,9 @@
 <session>
  <Bookmarks/>
  <Breakpoints groups="Breakpoints" active_group="Breakpoints">
-  <BreakpointListItem trigger="" line="75" counter="0" hardwareBreakpoint="" isFunctionBreakpoint="false" action="" expression="" group="Breakpoints" type="Breakpoint" state="4" filename="Devel/GIT/lwgsm/third_party/embedded-libs/FreeRTOS/portable/MemMang/heap_2.c" useHWbreakpoint="false"/>
-  <BreakpointListItem trigger="" line="156" counter="0" hardwareBreakpoint="" isFunctionBreakpoint="false" action="" expression="" group="Breakpoints" type="Breakpoint" state="4" filename="../../../main.c" useHWbreakpoint="false"/>
-  <BreakpointListItem trigger="" line="805" counter="0" hardwareBreakpoint="" isFunctionBreakpoint="false" action="" expression="" group="Breakpoints" type="Breakpoint" state="2" filename="../../../../../../external/fprintf/nrf_fprintf_format.c" useHWbreakpoint="false"/>
-  <BreakpointListItem trigger="" line="619" counter="0" hardwareBreakpoint="" isFunctionBreakpoint="false" action="" expression="" group="Breakpoints" type="Breakpoint" state="4" filename="../config/sdk_config.h" useHWbreakpoint="false"/>
+  <BreakpointListItem trigger="" line="2308" counter="0" hardwareBreakpoint="" isFunctionBreakpoint="false" action="" expression="" group="Breakpoints" type="Breakpoint" state="2" filename="lwgsm/src/lwgsm/lwgsm_int.c" useHWbreakpoint="false"/>
+  <BreakpointListItem trigger="" line="193" counter="0" hardwareBreakpoint="" isFunctionBreakpoint="false" action="" expression="" group="Breakpoints" type="Breakpoint" state="2" filename="main.c" useHWbreakpoint="false"/>
+  <BreakpointListItem trigger="" line="37" counter="0" hardwareBreakpoint="" isFunctionBreakpoint="false" action="" expression="" group="Breakpoints" type="Breakpoint" state="2" filename="E:/Users/StefanoParacchino/Devel/GIT/lwgsm/snippets/sms_send_receive.c" useHWbreakpoint="false"/>
   <Exceptions set="MemManage;UsageFault_Coprocessor;UsageFault_CheckingError;UsageFault_StateError;BusFault;ExceptionEntryReturnFault;HardFault"/>
  </Breakpoints>
  <ExecutionProfileWindow/>
@@ -14,7 +13,7 @@
  </FrameBufferWindow>
  <Memory1>
   <MemoryWindow addressSpace="" dataSize="1" autoEvaluate="0" viewMode="0" addressOrder="0" columnsText="" refreshPeriod="0" name="blinky_FreeRTOS_pca10056" radix="16" sizeText="" addressText=""/>
-  <MemoryWindow addressSpace="" dataSize="1" autoEvaluate="0" viewMode="0" addressOrder="0" columnsText="" refreshPeriod="0" name="first" radix="16" sizeText="" addressText=""/>
+  <MemoryWindow addressSpace="" dataSize="1" autoEvaluate="0" viewMode="0" addressOrder="0" columnsText="" refreshPeriod="0" name="first" radix="16" sizeText="" addressText="0x200058d8"/>
  </Memory1>
  <Memory2>
   <MemoryWindow addressSpace="" dataSize="1" autoEvaluate="0" viewMode="0" addressOrder="0" columnsText="" refreshPeriod="0" name="blinky_FreeRTOS_pca10056" radix="16" sizeText="" addressText=""/>
@@ -32,8 +31,11 @@
   <ProjectSessionItem path="mysolution"/>
   <ProjectSessionItem path="mysolution;first"/>
   <ProjectSessionItem path="mysolution;first;Application"/>
+  <ProjectSessionItem path="mysolution;first;None"/>
   <ProjectSessionItem path="mysolution;first;nRF_Drivers"/>
-  <ProjectSessionItem path="mysolution;first;SIM7070G"/>
+  <ProjectSessionItem path="mysolution;first;nRF_Libraries"/>
+  <ProjectSessionItem path="mysolution;first;nRF_Log"/>
+  <ProjectSessionItem path="mysolution;first;nRF_Segger_RTT"/>
   <ProjectSessionItem path="mysolution;first;Third Parties"/>
  </Project>
  <Register1>
@@ -60,7 +62,8 @@
  </TraceWindow>
  <Watch1>
   <Watches active="1" update="Never">
-   <Watchpoint expression="stackwater" name="stackwater" radix="11" linenumber="0" filename="../ses"/>
+   <Watchpoint expression="lwgsm" name="lwgsm" radix="-1" linenumber="1005" filename="lwgsm/src/lwgsm/lwgsm_int.c"/>
+   <Watchpoint expression="msg" name="msg" radix="-1" linenumber="2287" filename="lwgsm/src/lwgsm/lwgsm_int.c"/>
   </Watches>
  </Watch1>
  <Watch2>
@@ -73,22 +76,7 @@
   <Watches active="0" update="Never"/>
  </Watch4>
  <Files>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="325" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../main.c" selected="0" top="239" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="53" useTextEdit="1" useBinaryEdit="0" left="0" path="PhysicalLayer.c" selected="0" top="33" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="19" useTextEdit="1" useBinaryEdit="0" left="0" path="PhysicalLayer.h" selected="0" top="3" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="21" y="32" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../../../../external/freertos/source/include/semphr.h" selected="0" top="17" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="28" y="164" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../../../../external/freertos/source/include/task.h" selected="0" top="157" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="10" useTextEdit="1" useBinaryEdit="0" left="0" path="SimCom.c" selected="0" top="0" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="41" useTextEdit="1" useBinaryEdit="0" left="0" path="ServiceLayer.c" selected="0" top="26" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="7" y="141" useTextEdit="1" useBinaryEdit="0" left="0" path="DataLinkLayer.c" selected="1" top="138" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="2" useTextEdit="1" useBinaryEdit="0" left="0" path="Verify.c" selected="0" top="0" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="27" y="12" useTextEdit="1" useBinaryEdit="0" left="0" path="ServiceLayer.h" selected="0" top="0" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="6" useTextEdit="1" useBinaryEdit="0" left="0" path="DataLinkLayer.h" selected="0" top="0" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="25" y="5" useTextEdit="1" useBinaryEdit="0" left="0" path="SimCom.h" selected="0" top="0" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="0" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../../../../external/freertos/source/tasks.c" selected="0" top="24" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="0" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../../../../external/freertos/portable/GCC/nrf52/port.c" selected="0" top="148" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="0" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../../../../external/freertos/portable/CMSIS/nrf52/portmacro_cmsis.h" selected="0" top="77" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="0" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../../../../external/freertos/portable/GCC/nrf52/portmacro.h" selected="0" top="5" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="388" useTextEdit="1" useBinaryEdit="0" left="0" path="main.c" selected="1" top="372" codecName=""/>
  </Files>
- <ARMCrossStudioWindow activeProject="first" fileDialogDefaultFilter="*.c" autoConnectTarget="J-Link" buildConfiguration="Debug" sessionSettings="" debugSearchFileMap="" fileDialogInitialDirectory="E:/Users/StefanoParacchino/Devel/GIT/lwgsm/third_party/embedded-libs/FreeRTOS/CMSIS_RTOS_V2" debugSearchPath="" autoConnectCapabilities="3711"/>
+ <ARMCrossStudioWindow activeProject="first" fileDialogDefaultFilter="*.c" autoConnectTarget="J-Link" buildConfiguration="Debug" sessionSettings="" debugSearchFileMap="" fileDialogInitialDirectory="C:/NORDIC/nRF5_SDK_17.0.0_9d13099/external/freertos/source/portable/MemMang" debugSearchPath="" autoConnectCapabilities="3199"/>
 </session>
