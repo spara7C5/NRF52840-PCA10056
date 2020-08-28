@@ -36,6 +36,7 @@
 #include "lwgsm/lwgsm_mem.h"
 #include "lwgsm/lwgsm_input.h"
 #include "nrf_drv_uart.h"
+#include "nrf_delay.h"
 extern nrf_drv_uart_t UARTE_inst0;
 
 
@@ -51,6 +52,8 @@ static size_t
 send_data(const void* data, size_t len) {
     /* Implement send function here */
     (void)nrf_drv_uart_tx(&UARTE_inst0, data, len);
+    printf("%s",(char*)data);
+    nrf_delay_us(1000);
 
     return len;                                 /* Return number of bytes actually sent to AT port */
 }

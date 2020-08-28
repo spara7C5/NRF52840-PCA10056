@@ -53,6 +53,7 @@ lwgsm_input(const void* data, size_t len) {
     if (!lwgsm.status.f.initialized || lwgsm.buff.buff == NULL) {
         return lwgsmERR;
     }
+    printf("%c",*((char*)data));
     lwgsm_buff_write(&lwgsm.buff, data, len);       /* Write data to buffer */
     lwgsm_sys_mbox_putnow(&lwgsm.mbox_process, NULL);   /* Write empty box, don't care if write fails */
     lwgsm_recv_total_len += len;                  /* Update total number of received bytes */

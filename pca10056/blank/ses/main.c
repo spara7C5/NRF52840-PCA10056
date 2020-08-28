@@ -172,7 +172,7 @@ lwgsm_callback_func(lwgsm_evt_t* evt) {
 static void led_toggle_task_function (void * pvParameter)
 {
 
-    while(1);
+    
     printf("Starting GSM application!\r\n");
 
     /* Initialize GSM with default callback function */
@@ -182,15 +182,15 @@ static void led_toggle_task_function (void * pvParameter)
     }
 
   /* Configure device by unlocking SIM card */
-    if (configure_sim_card()) {
-        printf("SIM card configured. Adding delay to stabilize SIM card.\r\n");
-        lwgsm_delay(10000);
-    } else {
-        printf("Cannot configure SIM card! Is it inserted, pin valid and not under PUK? Closing down...\r\n");
-        while (1) { lwgsm_delay(1000); }
-    }
+//    if (configure_sim_card()) {
+//        printf("SIM card configured. Adding delay to stabilize SIM card.\r\n");
+//        lwgsm_delay(10000);
+//    } else {
+//        printf("Cannot configure SIM card! Is it inserted, pin valid and not under PUK? Closing down...\r\n");
+//        while (1) { lwgsm_delay(1000); }
+//    }
 
-
+    sms_send_receive_start();
 
 
 
@@ -299,7 +299,9 @@ static void uart_event_handler(nrf_drv_uart_event_t * p_event, void* p_context)
             // If 0, then this is a RXTO event with no new bytes.
             if(p_event->data.rxtx.bytes == 1)
             {
-               rx_buffer[cnt++]=p_event->data.rxtx.p_data[0];
+
+              lwgsm_input(p_event->data.rxtx.p_data,1);
+               //rx_buffer[cnt++]=p_event->data.rxtx.p_data[0];
                // A new start RX is needed to continue to receive data
 //              (void)nrf_drv_uart_rx(&UARTE_inst0, &sec_buffer[0], 1);
               
@@ -318,7 +320,7 @@ static void uart_event_handler(nrf_drv_uart_event_t * p_event, void* p_context)
 
         case NRF_DRV_UART_EVT_TX_DONE:
             
-          //  __NOP();
+            __NOP();
 //            (void)nrf_drv_uart_tx(&UARTE_inst0, tx_buffer, 1);
 
 
@@ -337,7 +339,7 @@ static void uart_event_handler(nrf_drv_uart_event_t * p_event, void* p_context)
       nrf_drv_uart_config_t config = NRF_DRV_UART_DEFAULT_CONFIG;
       config.baudrate = (nrf_uart_baudrate_t)NRF_UART_BAUDRATE_115200;
       config.hwfc = (UART_HWFC == APP_UART_FLOW_CONTROL_DISABLED) ? NRF_UART_HWFC_DISABLED : NRF_UART_HWFC_ENABLED;
-      config.interrupt_priority = APP_IRQ_PRIORITY_LOWEST;
+      config.interrupt_priority = APP_IRQ_PRIORITY_HIGHEST;
       config.parity = false ? NRF_UART_PARITY_INCLUDED : NRF_UART_PARITY_EXCLUDED;
       config.pselcts = CTS_PIN_NUMBER;
       config.pselrts = RTS_PIN_NUMBER;
@@ -400,19 +402,19 @@ int main(void)
     uart_tool_init();
     uart_modem_init();
 
-    char test[20]="AT&V\r";
-    for(int i=0;i<5;i++){
-      nrf_delay_us(1000);
-      //(void)nrf_drv_uart_tx(&UARTE_inst0, &test[i], 1);
-     }
-    (void)nrf_drv_uart_tx(&UARTE_inst0, &test[0], 5);
-   
- 
-    while(1){
-    nrf_delay_ms(100);
-    }
+//    char test[20]="AT&V\r";
+//    for(int i=0;i<5;i++){
+//      nrf_delay_us(1000);
+//      //(void)nrf_drv_uart_tx(&UARTE_inst0, &test[i], 1);
+//     }
+//    (void)nrf_drv_uart_tx(&UARTE_inst0, &test[0], 5);
+//   
+// 
+//    while(1){
+//    nrf_delay_ms(100);
+//    }
     /* Create task for LED0 blinking with priority set to 2 */
-    UNUSED_VARIABLE(xTaskCreate(led_toggle_task_function, "LED0", configMINIMAL_STACK_SIZE +500 , NULL, 2, &led_toggle_task_handle));
+    UNUSED_VARIABLE(xTaskCreate(led_toggle_task_function, "LED0", configMINIMAL_STACK_SIZE +1000 , NULL, 2, &led_toggle_task_handle));
 
 
     
