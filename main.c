@@ -72,6 +72,8 @@
 #include "PhysicalLayer.h"
 #include "SimCom.h"
 #include "semphr.h"
+#include "modem.h"
+#include "core/net.h"
 
 #if LEDS_NUMBER <= 2
 #error "Board is not equipped with enough amount of LEDs"
@@ -84,10 +86,12 @@
 #define UART_RX_BUF_SIZE 256                         /**< UART RX buffer size. */
 
 
+extern NetInterface *interface;
 
 
+extern void uart_drv_event_handler(nrf_drv_uart_event_t * p_event, void* p_context);
 nrf_drv_uart_t UARTE_inst0=NRF_DRV_UART_INSTANCE(0);
-nrf_drv_uart_t UARTE_inst1=NRF_DRV_UART_INSTANCE(1);
+//nrf_drv_uart_t UARTE_inst1=NRF_DRV_UART_INSTANCE(1);
 
 
 void uart_error_handle(app_uart_evt_t * p_event)
@@ -129,6 +133,31 @@ static void led_toggle_task_function (void * pvParameter)
 {
 UNUSED_PARAMETER(pvParameter);
 
+
+
+error_t res = modem_initEnvironment();
+    
+	if (res!=NO_ERROR){
+		printf("Error initializing Network Stack. Rebooting\n");
+		while(1);
+	}
+   osDelayTask(10);    
+  res=modemInit(interface);
+
+
+    if (res!=NO_ERROR){
+		printf("Error in modem Init. Rebooting\n");
+		while(1);
+	}
+
+  res=modemCall(interface);
+
+
+    while(1){
+    vTaskDelay(100);
+    }
+
+
     printf("press \"e\" to start Task Toggle LED\n");
     while(1){
       b=getchar();
@@ -144,7 +173,7 @@ UNUSED_PARAMETER(pvParameter);
    
    //(void)nrf_drv_uart_tx(&UARTE_inst0, &a, 1);
     vTaskDelay(1000);
-    sl_send(0,0,"test", 4);
+    
     
     }
     
@@ -219,50 +248,7 @@ void bsp_ext_init(void){
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 
- char rx_buffer[1];
- char tx_buffer[1];
-  extern char ph_receive_it_buf[];
-static void uart_drv_event_handler(nrf_drv_uart_event_t * p_event, void* p_context)
-{
-    app_uart_evt_t app_uart_event;
-    uint32_t err_code;
 
-    switch (p_event->type)
-    {
-        case NRF_DRV_UART_EVT_RX_DONE:
-            // If 0, then this is a RXTO event with no new bytes.
-            if(p_event->data.rxtx.bytes == 1)
-            {
-               
-               // A new start RX is needed to continue to receive data
-               ph_receive_intr(*ph_receive_it_buf);
-              
-              //(void)nrf_drv_uart_tx(&UARTE_inst0, &a, 1);
-               break;
-            }
-
-
-
-            break;
-
-        case NRF_DRV_UART_EVT_ERROR:
-            app_uart_event.evt_type                 = APP_UART_COMMUNICATION_ERROR;
-            app_uart_event.data.error_communication = p_event->data.error.error_mask;
-            //(void)nrf_drv_uart_rx(&UARTE_inst0, rx_buffer, 1);
-            
-            break;
-
-        case NRF_DRV_UART_EVT_TX_DONE:
-          
-//            
-
-
-            break;
-
-        default:
-            break;
-    }
-}
 
 
    void uart_tool_init(){
@@ -278,9 +264,9 @@ static void uart_drv_event_handler(nrf_drv_uart_event_t * p_event, void* p_conte
       config.pselrts = RTS_PIN_NUMBER;
       config.pselrxd = RX_PIN_NUMBER;
       config.pseltxd = TX_PIN_NUMBER;
-      UARTE_inst0.inst_idx=1;
+      //UARTE_inst0.inst_idx=1;
       err_code=nrf_drv_uart_init(&UARTE_inst0,&config,uart_drv_event_handler);
-      (void)nrf_drv_uart_rx(&UARTE_inst0, rx_buffer, 1);
+      
       APP_ERROR_CHECK(err_code);
       //NRFX_LOG_WARNING("Hello");
    }
@@ -303,9 +289,9 @@ static void uart_drv_event_handler(nrf_drv_uart_event_t * p_event, void* p_conte
       config.pselrxd = MODEM_RX;
       config.pseltxd = MODEM_TX;
       //UARTE_inst1.uarte.drv_inst_idx=1;
-      err_code=nrf_drv_uart_init(&UARTE_inst1,&config,uart_drv_event_handler);
-      (void)nrf_drv_uart_rx(&UARTE_inst1, rx_buffer, 1);
-      APP_ERROR_CHECK(err_code);
+//      err_code=nrf_drv_uart_init(&UARTE_inst1,&config,uart_drv_event_handler);
+//      (void)nrf_drv_uart_rx(&UARTE_inst1, rx_buffer, 1);
+//      APP_ERROR_CHECK(err_code);
 
    }
 
@@ -317,6 +303,12 @@ static void uart_drv_event_handler(nrf_drv_uart_event_t * p_event, void* p_conte
 
     NRF_LOG_DEFAULT_BACKENDS_INIT();
 }
+
+
+
+
+
+
 
 int main(void)
 {
@@ -332,22 +324,17 @@ int main(void)
     /* Configure LED-pins as outputs */
     bsp_board_init(BSP_INIT_LEDS);
     bsp_ext_init();
-    dl_send_lockHandle = xSemaphoreCreateMutex();
-    ASSERT(NULL != dl_send_lockHandle);
-    sl_send_lockHandle = xSemaphoreCreateMutex();
-    ASSERT(NULL != sl_send_lockHandle);
-    ph_send_lockHandle = xSemaphoreCreateMutex();
-    ASSERT(NULL != ph_send_lockHandle);
     uart_tool_init();
-    uart_modem_init();
-    simcom_init(&UARTE_inst1);
+    //uart_modem_init();
+    
+    
+     
 
-    char cnt=0;
  
     /* Create task for LED0 blinking with priority set to 2 */
     UNUSED_VARIABLE(xTaskCreate(led_toggle_task_function, "LED0", configMINIMAL_STACK_SIZE +500 , NULL, 2, &led_toggle_task_handle));
-     UNUSED_VARIABLE(xTaskCreate(StartReceiveTask, "MODEMRX", configMINIMAL_STACK_SIZE +500 , NULL, 2, &modemRX_task_handle));
-      UNUSED_VARIABLE(xTaskCreate(StartSendTask, "MODEMTX", configMINIMAL_STACK_SIZE +500 , NULL, 2, &modemTX_task_handle));
+    // UNUSED_VARIABLE(xTaskCreate(StartReceiveTask, "MODEMRX", configMINIMAL_STACK_SIZE +500 , NULL, 2, &modemRX_task_handle));
+    //  UNUSED_VARIABLE(xTaskCreate(StartSendTask, "MODEMTX", configMINIMAL_STACK_SIZE +500 , NULL, 2, &modemTX_task_handle));
 
 
     

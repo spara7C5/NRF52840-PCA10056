@@ -96,6 +96,20 @@
     <folder Name="Application">
       <file file_name="../../../main.c" />
       <file file_name="../config/sdk_config.h" />
+      <file file_name="os_port_config.h" />
+      <file file_name="cmsis_os.h" />
+      <file file_name="cmsis_os2.c" />
+      <file file_name="cmsis_os2.h" />
+      <file file_name="net_config.h" />
+      <file file_name="crypto_config.h" />
+      <file file_name="modem.c">
+        <configuration Name="Debug" build_exclude_from_build="No" />
+      </file>
+      <file file_name="modem.h" />
+      <file file_name="modem_uart_driver.h" />
+      <file file_name="modem_uart_driver.c">
+        <configuration Name="Debug" build_exclude_from_build="No" />
+      </file>
     </folder>
     <folder Name="None">
       <file file_name="../../../../../../modules/nrfx/mdk/ses_startup_nrf52840.s" />
@@ -107,27 +121,187 @@
       c_user_include_directories="../../../../../../components/libraries/uart;../../../../../../components/libraries/fifo;../../../../../../components/libraries/log" />
     <configuration
       Name="Debug"
-      c_user_include_directories="../../../../../../components/libraries/uart;../../../../../../components/libraries/fifo;../../../../../../components/libraries/delay;../../../../../../components/libraries/log;../../../../../../external/segger_rtt;../../../../../../integration/nrfx/legacy;../../../../../../modules/nrfx/drivers/include;." />
+      c_user_include_directories="../../../../../../components/libraries/uart;../../../../../../components/libraries/fifo;../../../../../../components/libraries/delay;../../../../../../components/libraries/log;../../../../../../external/segger_rtt;../../../../../../integration/nrfx/legacy;../../../../../../modules/nrfx/drivers/include;.;./cyclone_tcp;./common;./cyclone_crypto" />
     <folder Name="nRF_Segger_RTT">
       <file file_name="../../../../../../external/segger_rtt/SEGGER_RTT.c" />
       <file file_name="../../../../../../external/segger_rtt/SEGGER_RTT_printf.c" />
       <file file_name="../../../../../../external/segger_rtt/SEGGER_RTT_Syscalls_SES.c" />
     </folder>
-    <folder Name="SIM7070G">
-      <file file_name="CharQueue.c" />
-      <file file_name="DataLinkLayer.c" />
-      <file file_name="FIFO.c" />
-      <file file_name="PhysicalLayer.c" />
-      <file file_name="ServiceLayer.c" />
-      <file file_name="SimCom.c" />
-      <file file_name="Verify.c" />
-      <file file_name="DataLinkLayer.h" />
-      <file file_name="FIFO.h" />
-      <file file_name="CharQueue.h" />
-      <file file_name="PhysicalLayer.h" />
-      <file file_name="ServiceLayer.h" />
-      <file file_name="SimCom.h" />
-      <file file_name="Verify.h" />
+    <folder Name="Cyclone">
+      <folder Name="common">
+        <file file_name="E:/Users/StefanoParacchino/Devel/GIT/FI01-COBO-MASTER/Middlewares/Third_Party/Cyclone/common/compiler_port.h" />
+        <file file_name="E:/Users/StefanoParacchino/Devel/GIT/FI01-COBO-MASTER/Middlewares/Third_Party/Cyclone/common/cpu_endian.c" />
+        <file file_name="E:/Users/StefanoParacchino/Devel/GIT/FI01-COBO-MASTER/Middlewares/Third_Party/Cyclone/common/cpu_endian.h" />
+        <file file_name="E:/Users/StefanoParacchino/Devel/GIT/FI01-COBO-MASTER/Middlewares/Third_Party/Cyclone/common/date_time.c" />
+        <file file_name="E:/Users/StefanoParacchino/Devel/GIT/FI01-COBO-MASTER/Middlewares/Third_Party/Cyclone/common/date_time.h" />
+        <file file_name="E:/Users/StefanoParacchino/Devel/GIT/FI01-COBO-MASTER/Middlewares/Third_Party/Cyclone/common/debug.h" />
+        <file file_name="E:/Users/StefanoParacchino/Devel/GIT/FI01-COBO-MASTER/Middlewares/Third_Party/Cyclone/common/error.h" />
+        <file file_name="E:/Users/StefanoParacchino/Devel/GIT/FI01-COBO-MASTER/Middlewares/Third_Party/Cyclone/common/os_port.h" />
+        <file file_name="E:/Users/StefanoParacchino/Devel/GIT/FI01-COBO-MASTER/Middlewares/Third_Party/Cyclone/common/os_port_freertos.c" />
+        <file file_name="E:/Users/StefanoParacchino/Devel/GIT/FI01-COBO-MASTER/Middlewares/Third_Party/Cyclone/common/os_port_freertos.h" />
+        <file file_name="E:/Users/StefanoParacchino/Devel/GIT/FI01-COBO-MASTER/Middlewares/Third_Party/Cyclone/common/str.c" />
+        <file file_name="E:/Users/StefanoParacchino/Devel/GIT/FI01-COBO-MASTER/Middlewares/Third_Party/Cyclone/common/str.h" />
+      </folder>
+      <folder Name="cyclone_crypto">
+        <folder
+          Name="aead"
+          exclude=""
+          filter="*.*"
+          path="E:/Users/StefanoParacchino/Devel/GIT/FI01-COBO-MASTER/Middlewares/Third_Party/Cyclone/cyclone_crypto/aead"
+          recurse="No" />
+        <folder
+          Name="certificate"
+          exclude=""
+          filter="*.*"
+          path="E:/Users/StefanoParacchino/Devel/GIT/FI01-COBO-MASTER/Middlewares/Third_Party/Cyclone/cyclone_crypto/certificate"
+          recurse="No" />
+        <folder
+          Name="cipher"
+          exclude=""
+          filter="*.*"
+          path="E:/Users/StefanoParacchino/Devel/GIT/FI01-COBO-MASTER/Middlewares/Third_Party/Cyclone/cyclone_crypto/cipher"
+          recurse="No" />
+        <folder
+          Name="cipher_mode"
+          exclude=""
+          filter="*.*"
+          path="E:/Users/StefanoParacchino/Devel/GIT/FI01-COBO-MASTER/Middlewares/Third_Party/Cyclone/cyclone_crypto/cipher_mode"
+          recurse="No" />
+        <folder
+          Name="core"
+          exclude=""
+          filter="*.*"
+          path="E:/Users/StefanoParacchino/Devel/GIT/FI01-COBO-MASTER/Middlewares/Third_Party/Cyclone/cyclone_crypto/core"
+          recurse="No" />
+        <folder
+          Name="ecc"
+          exclude=""
+          filter="*.*"
+          path="E:/Users/StefanoParacchino/Devel/GIT/FI01-COBO-MASTER/Middlewares/Third_Party/Cyclone/cyclone_crypto/ecc"
+          recurse="No" />
+        <folder
+          Name="encoding"
+          exclude=""
+          filter="*.*"
+          path="E:/Users/StefanoParacchino/Devel/GIT/FI01-COBO-MASTER/Middlewares/Third_Party/Cyclone/cyclone_crypto/encoding"
+          recurse="No" />
+        <folder
+          Name="hash"
+          exclude=""
+          filter="*.*"
+          path="E:/Users/StefanoParacchino/Devel/GIT/FI01-COBO-MASTER/Middlewares/Third_Party/Cyclone/cyclone_crypto/hash"
+          recurse="No" />
+        <folder
+          Name="kdf"
+          exclude=""
+          filter="*.*"
+          path="E:/Users/StefanoParacchino/Devel/GIT/FI01-COBO-MASTER/Middlewares/Third_Party/Cyclone/cyclone_crypto/kdf"
+          recurse="No" />
+        <folder
+          Name="mac"
+          exclude=""
+          filter="*.*"
+          path="E:/Users/StefanoParacchino/Devel/GIT/FI01-COBO-MASTER/Middlewares/Third_Party/Cyclone/cyclone_crypto/mac"
+          recurse="No" />
+        <folder
+          Name="mpi"
+          exclude=""
+          filter="*.*"
+          path="E:/Users/StefanoParacchino/Devel/GIT/FI01-COBO-MASTER/Middlewares/Third_Party/Cyclone/cyclone_crypto/mpi"
+          recurse="No" />
+        <folder
+          Name="pkc"
+          exclude=""
+          filter="*.*"
+          path="E:/Users/StefanoParacchino/Devel/GIT/FI01-COBO-MASTER/Middlewares/Third_Party/Cyclone/cyclone_crypto/pkc"
+          recurse="No" />
+        <folder
+          Name="rng"
+          exclude=""
+          filter="*.*"
+          path="E:/Users/StefanoParacchino/Devel/GIT/FI01-COBO-MASTER/Middlewares/Third_Party/Cyclone/cyclone_crypto/rng"
+          recurse="No" />
+        <folder
+          Name="xof"
+          exclude=""
+          filter="*.*"
+          path="E:/Users/StefanoParacchino/Devel/GIT/FI01-COBO-MASTER/Middlewares/Third_Party/Cyclone/cyclone_crypto/xof"
+          recurse="No" />
+      </folder>
+      <folder Name="cyclone_tcp">
+        <folder
+          Name="core"
+          exclude=""
+          filter="*.*"
+          path="E:/Users/StefanoParacchino/Devel/GIT/FI01-COBO-MASTER/Middlewares/Third_Party/Cyclone/cyclone_tcp/core"
+          recurse="No" />
+        <folder
+          Name="dhcp"
+          exclude=""
+          filter="*.*"
+          path="E:/Users/StefanoParacchino/Devel/GIT/FI01-COBO-MASTER/Middlewares/Third_Party/Cyclone/cyclone_tcp/dhcp"
+          recurse="No" />
+        <folder
+          Name="dhcpv6"
+          exclude=""
+          filter="*.*"
+          path="E:/Users/StefanoParacchino/Devel/GIT/FI01-COBO-MASTER/Middlewares/Third_Party/Cyclone/cyclone_tcp/dhcpv6"
+          recurse="No" />
+        <folder
+          Name="dns"
+          exclude=""
+          filter="*.*"
+          path="E:/Users/StefanoParacchino/Devel/GIT/FI01-COBO-MASTER/Middlewares/Third_Party/Cyclone/cyclone_tcp/dns"
+          recurse="No" />
+        <folder
+          Name="dns_sd"
+          exclude=""
+          filter="*.*"
+          path="E:/Users/StefanoParacchino/Devel/GIT/FI01-COBO-MASTER/Middlewares/Third_Party/Cyclone/cyclone_tcp/dns_sd"
+          recurse="No" />
+        <folder
+          Name="ipv4"
+          exclude=""
+          filter="*.*"
+          path="E:/Users/StefanoParacchino/Devel/GIT/FI01-COBO-MASTER/Middlewares/Third_Party/Cyclone/cyclone_tcp/ipv4"
+          recurse="No" />
+        <folder
+          Name="ipv6"
+          exclude=""
+          filter="*.*"
+          path="E:/Users/StefanoParacchino/Devel/GIT/FI01-COBO-MASTER/Middlewares/Third_Party/Cyclone/cyclone_tcp/ipv6"
+          recurse="No" />
+        <folder
+          Name="mdns"
+          exclude=""
+          filter="*.*"
+          path="E:/Users/StefanoParacchino/Devel/GIT/FI01-COBO-MASTER/Middlewares/Third_Party/Cyclone/cyclone_tcp/mdns"
+          recurse="No" />
+        <folder
+          Name="mibs"
+          exclude=""
+          filter="*.*"
+          path="E:/Users/StefanoParacchino/Devel/GIT/FI01-COBO-MASTER/Middlewares/Third_Party/Cyclone/cyclone_tcp/mibs"
+          recurse="No" />
+        <folder
+          Name="netbios"
+          exclude=""
+          filter="*.*"
+          path="E:/Users/StefanoParacchino/Devel/GIT/FI01-COBO-MASTER/Middlewares/Third_Party/Cyclone/cyclone_tcp/netbios"
+          recurse="No" />
+        <folder
+          Name="ppp"
+          exclude=""
+          filter="*.*"
+          path="E:/Users/StefanoParacchino/Devel/GIT/FI01-COBO-MASTER/Middlewares/Third_Party/Cyclone/cyclone_tcp/ppp"
+          recurse="No" />
+        <folder
+          Name="web_socket"
+          exclude=""
+          filter="*.*"
+          path="E:/Users/StefanoParacchino/Devel/GIT/FI01-COBO-MASTER/Middlewares/Third_Party/Cyclone/cyclone_tcp/web_socket"
+          recurse="No" />
+      </folder>
     </folder>
   </project>
   <configuration
