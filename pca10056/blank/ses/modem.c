@@ -131,7 +131,7 @@ error_t modemInit(NetInterface *interface)
         }
 
       
-
+    //error = modemSendAtCommand(interface, "AT+CRESET\r", modem_buffer, sizeof(modem_buffer));
   
 
    //Module identification
@@ -386,14 +386,12 @@ error_t modemCall(NetInterface *interface)
    char_t modem_buffer[256];
 
  
-
-   error = modemSendAtCommand(interface, "AT+CMGF=1\r", modem_buffer, sizeof(modem_buffer));
-   //error = modemSendAtCommand(interface, "AT+CSCS=GSM", modem_buffer, sizeof(modem_buffer));
-  //error = modemSendAtCommand(interface, "AT+CSCA=\"+393408362323\"", modem_buffer, sizeof(modem_buffer));
-error = modemSendAtCommand(interface, "AT+CSMP=17,167,0,240", modem_buffer, sizeof(modem_buffer));
-error = modemSendAtCommand(interface, "AT+CMGS=\"+393408362323\"", modem_buffer, sizeof(modem_buffer));
-   error = modemSendAtCommand(interface, "CiaoDaSIM7000\x1A", modem_buffer, sizeof(modem_buffer));
-
+    ////////////// SMS PROCEDURE TESTED ON SIM7000-BK  ////////////////////////////////////
+    error = modemSendAtCommand(interface, "AT+CMGF=1\r", modem_buffer, sizeof(modem_buffer));
+    error = modemSendAtCommand(interface, "AT+CMGS=\"+393408362323\"\r", modem_buffer, sizeof(modem_buffer));
+    sprintf(&modem_buffer[0],"CiaoDaSIM7000-tick:%u\x1A",osGetSystemTime());
+    error = modemSendAtCommand(interface, modem_buffer, modem_buffer, sizeof(modem_buffer));
+    /////////////////////////////////////////////////////////////////////////////////////////
 
 //        sprintf(modem_buffer, "AT+CGDCONT=1,\"PPP\",\"%s\"\r", APN_PP_APN);
 //   //Format AT+CGDCONT command
@@ -442,7 +440,8 @@ error = modemSendAtCommand(interface, "AT+CMGS=\"+393408362323\"", modem_buffer,
 
 }
 
-error_t modem_PPPopen(NetInterface *interface){
+error_t modem_PPPopen(NetInterface *interface)
+{
 
 	error_t error;
     Ipv4Addr ipv4Addr;
@@ -506,7 +505,8 @@ error_t modemClosecall(NetInterface *interface)
 	error=modemSendAtCommand(interface, modem_buffer, modem_buffer, sizeof(modem_buffer));
 	//Any error to report?
 
-	if(error || strstr(modem_buffer, "OK") == NULL){
+	if(error || strstr(modem_buffer, "OK") == NULL)
+        {
 		return ERROR_FAILURE;
 	}
 
@@ -517,13 +517,6 @@ error_t modemClosecall(NetInterface *interface)
 }
 
 /**
- * @brief Get the modem status register
- * @return The Status Register (32 bit)
- **/
-
-uint32_t getModemStatus(){
-	return status_register;
-}
 
 
 /**
@@ -534,6 +527,7 @@ uint32_t getModemStatus(){
  * @param[in] size Size of the response modem_buffer
  * @return Error code
  **/
+
 
 error_t modemSendAtCommand(NetInterface *interface,const char_t *command, char_t *response, size_t size)
 {

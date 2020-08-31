@@ -257,7 +257,7 @@ void uart_drv_event_handler(nrf_drv_uart_event_t * p_event, void* p_context)
 
         case NRF_DRV_UART_EVT_TX_DONE:
              (void)pppHdlcDriverReadTxQueue(interface, &c);
-              (void)nrf_drv_uart_tx(&UARTE_inst0, &c, 1);
+             if (c!=EOF) (void)nrf_drv_uart_tx(&UARTE_inst0, &c, 1);
 
 
             break;
