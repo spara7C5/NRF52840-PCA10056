@@ -69,11 +69,12 @@
 #include "nrf_log_ctrl.h"
 #include "nrf_log_default_backends.h"
 
-#include "PhysicalLayer.h"
-#include "SimCom.h"
-#include "semphr.h"
+
+#include "nrf_drv_timer.h"
+
 #include "modem.h"
 #include "core/net.h"
+#include "debug.h"
 
 #if LEDS_NUMBER <= 2
 #error "Board is not equipped with enough amount of LEDs"
@@ -88,7 +89,8 @@
 
 extern NetInterface *interface;
 
-
+const nrf_drv_timer_t TIMER_DATA = NRF_DRV_TIMER_INSTANCE(0);
+void timer_dummy_event_handler(nrf_timer_event_t event_type, void* p_context){}
 extern void uart_drv_event_handler(nrf_drv_uart_event_t * p_event, void* p_context);
 nrf_drv_uart_t UARTE_inst0=NRF_DRV_UART_INSTANCE(0);
 //nrf_drv_uart_t UARTE_inst1=NRF_DRV_UART_INSTANCE(1);
@@ -110,10 +112,8 @@ void uart_error_handle(app_uart_evt_t * p_event)
 #define TASK_DELAY        100           /**< Task delay. Delays a LED0 task for 200 ms */
 #define TIMER_PERIOD      1000          /**< Timer period. LED1 timer will expire after 1000 ms */
 
-TaskHandle_t  led_toggle_task_handle;   /**< Reference to LED0 toggling FreeRTOS task. */
-TaskHandle_t  modemRX_task_handle;   
-TaskHandle_t  modemTX_task_handle;   
-TimerHandle_t led_toggle_timer_handle;  /**< Reference to LED1 toggling FreeRTOS timer. */
+TaskHandle_t  modem_task_handle;   /**< Reference to LED0 toggling FreeRTOS task. */  
+TimerHandle_t dataIN_task_handle;  /**< Reference to LED1 toggling FreeRTOS timer. */
 UBaseType_t stackwater;
 
 
@@ -129,7 +129,7 @@ UBaseType_t stackwater;
  char mex[]="DETECTED\n";
  char a='a';
  int b='0';
-static void led_toggle_task_function (void * pvParameter)
+static void modem_task_function (void * pvParameter)
 {
 UNUSED_PARAMETER(pvParameter);
 
@@ -223,26 +223,45 @@ static void led_toggle_timer_callback (void * pvParameter)
 }
 
 
-void gpiote_callback(void){
+uint32_t datastarttime=0;
+bool datagotinit=0;
+uint32_t dataendtime=0;
+uint32_t dataperiod=0;
+
+void gpiote_callback(nrf_drv_gpiote_pin_t pin, nrf_gpiote_polarity_t action){
 //  bsp_board_led_invert(BSP_BOARD_LED_3);
-  nrf_gpio_pin_write(LED_4,0); //light up the LED with 0
+//  nrf_gpio_pin_write(LED_4,0); //light up the LED with 0
 //  bsp_board_led_on(BSP_BOARD_LED_3);
+  if(datagotinit==0){
+    datastarttime=nrfx_timer_capture(&TIMER_DATA,NRF_TIMER_CC_CHANNEL0);
+     //nrf_drv_timer_clear(&TIMER_LED);
+    datagotinit=1;
+  }else{
+      datagotinit=0;
+      dataendtime=nrfx_timer_capture(&TIMER_DATA,NRF_TIMER_CC_CHANNEL0);
+    if(dataendtime>datastarttime){
+      dataperiod=(dataendtime-datastarttime)/16;
+     // __NOP();
+      }else{
+      __NOP();
+      //TODO: resend data or error or difference?
+      }
+   }
+
 }
 
 void bsp_ext_init(void){
 
-//    nrf_gpio_cfg_output(TEST_PIN);
-//    nrf_gpio_cfg_input(TEST_PIN_1,NRF_GPIO_PIN_PULLDOWN);
-//    nrfx_err_t err_code = nrf_drv_gpiote_init();
-//    APP_ERROR_CHECK(err_code);
-//
-//    nrf_drv_gpiote_in_config_t in_config = NRFX_GPIOTE_CONFIG_IN_SENSE_LOTOHI(true);
-//    in_config.pull = NRF_GPIO_PIN_PULLDOWN;
-//
-//    err_code = nrf_drv_gpiote_in_init(TEST_PIN_2, &in_config, gpiote_callback);
-//    APP_ERROR_CHECK(err_code);
-//
-//    nrf_drv_gpiote_in_event_enable(TEST_PIN_2, true);
+    nrfx_err_t err_code = nrf_drv_gpiote_init();
+    APP_ERROR_CHECK(err_code);
+
+    nrf_drv_gpiote_in_config_t in_config = NRFX_GPIOTE_CONFIG_IN_SENSE_LOTOHI(true);
+    in_config.pull = GPIO_PIN_CNF_PULL_Pulldown;
+
+    err_code = nrf_drv_gpiote_in_init(DATA_IN, &in_config, gpiote_callback);
+    APP_ERROR_CHECK(err_code);
+
+    nrf_drv_gpiote_in_event_enable(DATA_IN, true);
 
     }
 
@@ -305,9 +324,35 @@ void bsp_ext_init(void){
 }
 
 
+static void timer_init(void){
 
+      uint32_t err_code = NRF_SUCCESS;
+   nrf_drv_timer_config_t timer_cfg = {                                                                                    
+      .frequency          = (nrf_timer_frequency_t)NRFX_TIMER_DEFAULT_CONFIG_FREQUENCY,
+      .mode               = (nrf_timer_mode_t)NRF_TIMER_MODE_TIMER,          
+      .bit_width          = (nrf_timer_bit_width_t)NRFX_TIMER_DEFAULT_CONFIG_BIT_WIDTH,
+      .interrupt_priority = NRFX_TIMER_DEFAULT_CONFIG_IRQ_PRIORITY,                    
+      .p_context          = NULL                                                       
+  };
+      err_code = nrf_drv_timer_init(&TIMER_DATA, &timer_cfg, timer_dummy_event_handler);
+      APP_ERROR_CHECK(err_code);
 
+      //time_ticks = nrf_drv_timer_ms_to_ticks(&TIMER_DATA, time_ms);
 
+      //nrf_drv_timer_extended_compare(
+       //    &TIMER_LED, NRF_TIMER_CC_CHANNEL0, time_ticks, NRF_TIMER_SHORT_COMPARE0_CLEAR_MASK, true);
+
+      nrf_drv_timer_enable(&TIMER_DATA);
+
+}
+
+static void dataIN_task_function (void * pvParameter){
+
+    while(1){
+      vTaskDelay(1000);
+      TRACE_INFO("data period:%u\n\r",dataperiod);
+    }
+}
 
 
 int main(void)
@@ -326,14 +371,15 @@ int main(void)
     bsp_ext_init();
     uart_tool_init();
     //uart_modem_init();
+    timer_init();
     
     
      
 
  
     /* Create task for LED0 blinking with priority set to 2 */
-    UNUSED_VARIABLE(xTaskCreate(led_toggle_task_function, "LED0", configMINIMAL_STACK_SIZE +500 , NULL, 2, &led_toggle_task_handle));
-    // UNUSED_VARIABLE(xTaskCreate(StartReceiveTask, "MODEMRX", configMINIMAL_STACK_SIZE +500 , NULL, 2, &modemRX_task_handle));
+    UNUSED_VARIABLE(xTaskCreate(modem_task_function, "MODEM", configMINIMAL_STACK_SIZE +500 , NULL, 2, &modem_task_handle));
+    UNUSED_VARIABLE(xTaskCreate(dataIN_task_function, "DATAIN", configMINIMAL_STACK_SIZE +200 , NULL, 2, &dataIN_task_handle));
     //  UNUSED_VARIABLE(xTaskCreate(StartSendTask, "MODEMTX", configMINIMAL_STACK_SIZE +500 , NULL, 2, &modemTX_task_handle));
 
 

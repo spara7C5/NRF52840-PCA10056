@@ -239,7 +239,9 @@ void uart_drv_event_handler(nrf_drv_uart_event_t * p_event, void* p_context)
                
                // A new start RX is needed to continue to receive data
               (void) pppHdlcDriverWriteRxQueue(interface, p_event->data.rxtx.p_data[0]);
-              
+              if (p_event->data.rxtx.p_data[0]==250){
+              __NOP();
+              }
               
               
             }
