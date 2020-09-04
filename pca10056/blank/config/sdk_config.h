@@ -4108,6 +4108,15 @@
 
 // </e>
 
+
+#ifndef NRF_QUEUE
+#define NRF_QUEUE 1
+#endif
+
+
+#ifndef NRF_QUEUE_CLI_CMDS
+#define NRF_QUEUE_CLI_CMDS 1
+#endif
 // <<< end of configuration section >>>
 #endif //SDK_CONFIG_H
 

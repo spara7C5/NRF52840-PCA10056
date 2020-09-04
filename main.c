@@ -71,6 +71,7 @@
 
 
 #include "nrf_drv_timer.h"
+#include "nrf_queue.h"
 
 #include "modem.h"
 #include "core/net.h"
@@ -91,6 +92,11 @@ extern NetInterface *interface;
 
 const nrf_drv_timer_t TIMER_DATA = NRF_DRV_TIMER_INSTANCE(0);
 void timer_dummy_event_handler(nrf_timer_event_t event_type, void* p_context){}
+NRF_QUEUE_DEF(uint32_t, datain_queue, 4, NRF_QUEUE_MODE_OVERFLOW);
+static SemaphoreHandle_t datain_semaph;
+uint32_t datain_buff[8];
+
+
 extern void uart_drv_event_handler(nrf_drv_uart_event_t * p_event, void* p_context);
 nrf_drv_uart_t UARTE_inst0=NRF_DRV_UART_INSTANCE(0);
 //nrf_drv_uart_t UARTE_inst1=NRF_DRV_UART_INSTANCE(1);
@@ -147,7 +153,7 @@ error_t res = modem_initEnvironment();
 
     if (res!=NO_ERROR){
 		printf("Error in modem Init. Rebooting\n");
-		while(1);
+		while(1)vTaskDelay(1000);
 	}
 
   res=modemCall(interface);
@@ -227,11 +233,13 @@ uint32_t datastarttime=0;
 bool datagotinit=0;
 uint32_t dataendtime=0;
 uint32_t dataperiod=0;
+ret_code_t err_code;
 
 void gpiote_callback(nrf_drv_gpiote_pin_t pin, nrf_gpiote_polarity_t action){
 //  bsp_board_led_invert(BSP_BOARD_LED_3);
 //  nrf_gpio_pin_write(LED_4,0); //light up the LED with 0
 //  bsp_board_led_on(BSP_BOARD_LED_3);
+  UNUSED_VARIABLE(osSemaphoreRelease(datain_semaph));
   if(datagotinit==0){
     datastarttime=nrfx_timer_capture(&TIMER_DATA,NRF_TIMER_CC_CHANNEL0);
      //nrf_drv_timer_clear(&TIMER_LED);
@@ -241,6 +249,8 @@ void gpiote_callback(nrf_drv_gpiote_pin_t pin, nrf_gpiote_polarity_t action){
       dataendtime=nrfx_timer_capture(&TIMER_DATA,NRF_TIMER_CC_CHANNEL0);
     if(dataendtime>datastarttime){
       dataperiod=(dataendtime-datastarttime)/16;
+      ret_code_t err_code = nrf_queue_push(&datain_queue, &dataperiod);
+      APP_ERROR_CHECK(err_code);
      // __NOP();
       }else{
       __NOP();
@@ -256,7 +266,7 @@ void bsp_ext_init(void){
     APP_ERROR_CHECK(err_code);
 
     nrf_drv_gpiote_in_config_t in_config = NRFX_GPIOTE_CONFIG_IN_SENSE_LOTOHI(true);
-    in_config.pull = GPIO_PIN_CNF_PULL_Pulldown;
+    in_config.pull = GPIO_PIN_CNF_PULL_Disabled;
 
     err_code = nrf_drv_gpiote_in_init(DATA_IN, &in_config, gpiote_callback);
     APP_ERROR_CHECK(err_code);
@@ -347,12 +357,22 @@ static void timer_init(void){
 }
 
 static void dataIN_task_function (void * pvParameter){
+  uint32_t dataperiodout=0;
 
     while(1){
+      UNUSED_RETURN_VALUE(xSemaphoreTake(datain_semaph, portMAX_DELAY));
+      uint8_t cnt=0;
+      while (cnt<(8+1)){
+        ret_code_t err_code = nrf_queue_generic_pop(&datain_queue,&dataperiodout,false);
+        datain_buff[cnt]=dataperiodout;
+        if(err_code==NRF_SUCCESS) cnt++;
+      }
       vTaskDelay(1000);
-      TRACE_INFO("data period:%u\n\r",dataperiod);
+      TRACE_INFO("data period:%u-%u-%u-%u-%u-%u-%u-%u\n\r",datain_buff[0],datain_buff[1],datain_buff[2],datain_buff[3],datain_buff[4],datain_buff[5],datain_buff[6],datain_buff[7]);
     }
 }
+
+
 
 
 int main(void)
@@ -366,14 +386,15 @@ int main(void)
     err_code = nrf_drv_clock_init();
     APP_ERROR_CHECK(err_code);
 
+    datain_semaph = xSemaphoreCreateBinary();
+    ASSERT(NULL != datain_semaph);
+
     /* Configure LED-pins as outputs */
     bsp_board_init(BSP_INIT_LEDS);
-    bsp_ext_init();
     uart_tool_init();
     //uart_modem_init();
     timer_init();
-    
-    
+    bsp_ext_init();
      
 
  

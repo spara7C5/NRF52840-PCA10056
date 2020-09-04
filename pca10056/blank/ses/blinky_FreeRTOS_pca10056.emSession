@@ -2,9 +2,8 @@
 <session>
  <Bookmarks/>
  <Breakpoints groups="Breakpoints" active_group="Breakpoints">
-  <BreakpointListItem trigger="" line="157" counter="0" hardwareBreakpoint="" isFunctionBreakpoint="false" action="" expression="" group="Breakpoints" type="Breakpoint" state="2" filename="../../../main.c" useHWbreakpoint="false"/>
-  <BreakpointListItem trigger="" line="422" counter="0" hardwareBreakpoint="" isFunctionBreakpoint="false" action="" expression="" group="Breakpoints" type="Breakpoint" state="2" filename="modem.c" useHWbreakpoint="false"/>
-  <BreakpointListItem trigger="" line="494" counter="0" hardwareBreakpoint="" isFunctionBreakpoint="false" action="" expression="" group="Breakpoints" type="Breakpoint" state="2" filename="modem.c" useHWbreakpoint="false"/>
+  <BreakpointListItem trigger="" line="363" counter="0" hardwareBreakpoint="" isFunctionBreakpoint="false" action="" expression="" group="Breakpoints" type="Breakpoint" state="2" filename="../../../main.c" useHWbreakpoint="false"/>
+  <BreakpointListItem trigger="" line="137" counter="0" hardwareBreakpoint="" isFunctionBreakpoint="false" action="" expression="" group="Breakpoints" type="Breakpoint" state="3" filename="../../../../../../components/libraries/ringbuf/nrf_ringbuf.c" useHWbreakpoint="false"/>
   <Exceptions set="MemManage;UsageFault_Coprocessor;UsageFault_CheckingError;UsageFault_StateError;BusFault;ExceptionEntryReturnFault;HardFault"/>
  </Breakpoints>
  <ExecutionProfileWindow/>
@@ -13,7 +12,7 @@
  </FrameBufferWindow>
  <Memory1>
   <MemoryWindow addressSpace="" dataSize="1" autoEvaluate="0" viewMode="0" addressOrder="0" columnsText="" refreshPeriod="0" name="blinky_FreeRTOS_pca10056" radix="16" sizeText="" addressText=""/>
-  <MemoryWindow addressSpace="" dataSize="1" autoEvaluate="0" viewMode="0" addressOrder="0" columnsText="" refreshPeriod="0" name="first" radix="16" sizeText="" addressText="0x200058d8"/>
+  <MemoryWindow addressSpace="" dataSize="1" autoEvaluate="0" viewMode="0" addressOrder="0" columnsText="" refreshPeriod="0" name="first" radix="16" sizeText="" addressText="0x20009498"/>
  </Memory1>
  <Memory2>
   <MemoryWindow addressSpace="" dataSize="1" autoEvaluate="0" viewMode="0" addressOrder="0" columnsText="" refreshPeriod="0" name="blinky_FreeRTOS_pca10056" radix="16" sizeText="" addressText=""/>
@@ -31,13 +30,10 @@
   <ProjectSessionItem path="mysolution"/>
   <ProjectSessionItem path="mysolution;first"/>
   <ProjectSessionItem path="mysolution;first;Application"/>
-  <ProjectSessionItem path="mysolution;first;Cyclone"/>
-  <ProjectSessionItem path="mysolution;first;Cyclone;common"/>
-  <ProjectSessionItem path="mysolution;first;Cyclone;cyclone_tcp"/>
-  <ProjectSessionItem path="mysolution;first;Cyclone;cyclone_tcp;ppp"/>
   <ProjectSessionItem path="mysolution;first;None"/>
   <ProjectSessionItem path="mysolution;first;nRF_Drivers"/>
   <ProjectSessionItem path="mysolution;first;nRF_Libraries"/>
+  <ProjectSessionItem path="mysolution;first;nRF_Log"/>
   <ProjectSessionItem path="mysolution;first;Third Parties"/>
  </Project>
  <Register1>
@@ -66,7 +62,10 @@
   <Watches active="1" update="Never">
    <Watchpoint expression="lwgsm" name="lwgsm" radix="-1" linenumber="1005" filename="lwgsm/src/lwgsm/lwgsm_int.c"/>
    <Watchpoint expression="msg" name="msg" radix="-1" linenumber="2287" filename="lwgsm/src/lwgsm/lwgsm_int.c"/>
-   <Watchpoint expression="post_buffer" name="post_buffer" radix="-1" linenumber="430" filename="modem.c"/>
+   <Watchpoint expression="post_buffer" name="post_buffer" radix="-1" linenumber="489" filename="modem.c"/>
+   <Watchpoint expression="str" name="str" radix="16" linenumber="873" filename="modem.c"/>
+   <Watchpoint expression="response" name="response" radix="-1" linenumber="873" filename="modem.c"/>
+   <Watchpoint expression="datain" name="datain" radix="-1" linenumber="363" filename="../../../main.c"/>
   </Watches>
  </Watch1>
  <Watch2>
@@ -79,51 +78,32 @@
   <Watches active="0" update="Never"/>
  </Watch4>
  <Files>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="443" useTextEdit="1" useBinaryEdit="0" left="0" path="modem.c" selected="1" top="372" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="3" y="268" useTextEdit="1" useBinaryEdit="0" left="0" path="common/error.h" selected="0" top="250" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="59" useTextEdit="1" useBinaryEdit="0" left="0" path="modem.h" selected="0" top="43" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="15" useTextEdit="1" useBinaryEdit="0" left="0" path="modem_uart_driver.h" selected="0" top="0" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="259" useTextEdit="1" useBinaryEdit="0" left="0" path="modem_uart_driver.c" selected="0" top="242" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="552" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../../../../components/libraries/bsp/bsp.c" selected="0" top="533" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="529" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../../../../integration/nrfx/legacy/nrf_drv_uart.h" selected="0" top="499" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="35" useTextEdit="1" useBinaryEdit="0" left="0" path="cyclone_crypto/core/crypto.h" selected="0" top="13" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="0" useTextEdit="1" useBinaryEdit="0" left="0" path="crypto_config.h" selected="0" top="4" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="301" useTextEdit="1" useBinaryEdit="0" left="0" path="cyclone_tcp/core/net.h" selected="0" top="292" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="34" useTextEdit="1" useBinaryEdit="0" left="0" path="cyclone_tcp/core/nic.h" selected="0" top="17" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="57" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../../../../components/libraries/util/app_error.h" selected="0" top="32" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="0" useTextEdit="1" useBinaryEdit="0" left="0" path="cyclone_tcp/ppp/ppp_hdlc.h" selected="0" top="33" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="32" useTextEdit="1" useBinaryEdit="0" left="0" path="common/os_port.h" selected="0" top="14" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="35" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../config/FreeRTOSConfig.h" selected="0" top="96" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="59" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../../../../components/libraries/util/app_util_platform.h" selected="0" top="31" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="99" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../../../../components/libraries/util/nordic_common.h" selected="0" top="71" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="88" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../../../../components/libraries/util/app_error_weak.c" selected="0" top="83" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="48" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../../../../components/libraries/util/app_error_handler_gcc.c" selected="0" top="32" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="94" useTextEdit="1" useBinaryEdit="0" left="0" path="E:/Users/StefanoParacchino/Devel/GIT/FI01-COBO-MASTER/Middlewares/Third_Party/Cyclone/cyclone_tcp/core/net.c" selected="0" top="84" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="413" useTextEdit="1" useBinaryEdit="0" left="0" path="E:/Users/StefanoParacchino/Devel/GIT/FI01-COBO-MASTER/Middlewares/Third_Party/Cyclone/common/os_port_freertos.c" selected="0" top="399" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="1382" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../../../../external/freertos/source/queue.c" selected="0" top="1366" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="53" useTextEdit="1" useBinaryEdit="0" left="0" path="E:/Users/StefanoParacchino/Devel/GIT/FI01-COBO-MASTER/Middlewares/Third_Party/Cyclone/cyclone_tcp/core/net_mem.c" selected="0" top="30" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="53" y="427" useTextEdit="1" useBinaryEdit="0" left="0" path="E:/Users/StefanoParacchino/Devel/GIT/FI01-COBO-MASTER/Middlewares/Third_Party/Cyclone/cyclone_tcp/ppp/ppp.c" selected="0" top="52" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="71" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../../../../modules/nrfx/mdk/ses_startup_nrf52840.s" selected="0" top="55" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="934" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../../../../components/toolchain/cmsis/include/cmsis_gcc.h" selected="0" top="918" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="103" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../../../../external/freertos/portable/GCC/nrf52/port.c" selected="0" top="87" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="102" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../../../../integration/nrfx/legacy/nrf_drv_uart.c" selected="0" top="86" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="629" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../../../../modules/nrfx/drivers/src/nrfx_uart.c" selected="0" top="615" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="54" useTextEdit="1" useBinaryEdit="0" left="0" path="E:/Users/StefanoParacchino/Devel/GIT/FI01-COBO-MASTER/Middlewares/Third_Party/Cyclone/common/os_port_freertos.h" selected="0" top="38" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="0" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../../../../components/libraries/delay/nrf_delay.h" selected="0" top="42" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="66" useTextEdit="1" useBinaryEdit="0" left="0" path="common/debug.h" selected="0" top="44" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="496" useTextEdit="1" useBinaryEdit="0" left="0" path="E:/Users/StefanoParacchino/Devel/GIT/FI01-COBO-MASTER/Middlewares/Third_Party/Cyclone/cyclone_tcp/ppp/ppp_hdlc.c" selected="0" top="465" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="226" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../../../../components/libraries/uart/app_uart_fifo.c" selected="0" top="218" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="100" useTextEdit="1" useBinaryEdit="0" left="0" path="cmsis_os.h" selected="0" top="89" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="138" useTextEdit="1" useBinaryEdit="0" left="0" path="common/os_port_freertos.h" selected="0" top="100" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="0" useTextEdit="1" useBinaryEdit="0" left="0" path="os_port_config.h" selected="0" top="6" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="251" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../../../../external/freertos/portable/CMSIS/nrf52/port_cmsis_systick.c" selected="0" top="224" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="1306" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../../../../external/freertos/source/tasks.c" selected="0" top="1292" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="88" useTextEdit="1" useBinaryEdit="0" left="0" path="cyclone_tcp/ppp/ppp.h" selected="0" top="74" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="193" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../../../../external/freertos/source/list.c" selected="0" top="179" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="367" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../../../../modules/nrfx/hal/nrf_rtc.h" selected="0" top="353" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="313" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../main.c" selected="0" top="299" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="60" useTextEdit="1" useBinaryEdit="0" left="0" path="C:/Program Files/SEGGER/SEGGER Embedded Studio for ARM 4.30a/include/stdio.h" selected="0" top="46" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="0" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../../../../external/freertos/source/include/FreeRTOS.h" selected="0" top="630" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="250" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../main.c" selected="0" top="277" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="203" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../../../../external/segger_rtt/SEGGER_RTT_Syscalls_SES.c" selected="0" top="199" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="71" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../../../../modules/nrfx/drivers/include/nrfx_timer.h" selected="0" top="59" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="0" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../../../../integration/nrfx/legacy/nrf_drv_uart.c" selected="0" top="0" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="4117" useTextEdit="1" useBinaryEdit="0" left="0" path="../config/sdk_config.h" selected="0" top="4096" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="99" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../../../../components/libraries/util/app_error_weak.c" selected="0" top="84" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="925" useTextEdit="1" useBinaryEdit="0" left="0" path="modem.c" selected="0" top="923" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="71" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../../../../modules/nrfx/mdk/ses_startup_nrf52840.s" selected="0" top="59" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="56" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../../../../external/freertos/source/include/FreeRTOS.h" selected="0" top="51" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="65" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../config/FreeRTOSConfig.h" selected="0" top="64" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="50" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../../../../components/libraries/util/nrf_assert.c" selected="0" top="39" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="2208" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../../../../external/freertos/source/tasks.c" selected="0" top="2177" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="157" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../../../../external/freertos/portable/CMSIS/nrf52/port_cmsis.c" selected="0" top="146" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="89" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../../../../components/boards/pca10056.h" selected="0" top="73" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="6777" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../../../../modules/nrfx/mdk/nrf52840_bitfields.h" selected="0" top="6763" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="136" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../../../../components/libraries/ringbuf/nrf_ringbuf.c" selected="0" top="111" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="0" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../../../../external/freertos/source/stream_buffer.c" selected="0" top="92" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="0" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../../../../components/libraries/uart/app_uart_fifo.c" selected="0" top="0" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="85" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../../../../components/libraries/ringbuf/nrf_ringbuf.h" selected="0" top="69" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="193" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../../../../modules/nrfx/drivers/src/nrfx_timer.c" selected="0" top="178" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="251" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../../../../external/freertos/portable/CMSIS/nrf52/port_cmsis_systick.c" selected="0" top="133" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="0" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../../../../components/libraries/queue/nrf_queue.h" selected="0" top="0" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="327" useTextEdit="1" useBinaryEdit="0" left="0" path="nrf_queue.h" selected="0" top="323" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="45" y="147" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../../../../components/libraries/queue/nrf_queue.c" selected="1" top="135" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="0" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../../../../components/libraries/util/sdk_common.h" selected="0" top="29" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="105" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../../../../components/libraries/log/src/nrf_log_backend_flash.c" selected="0" top="20" codecName="Default"/>
  </Files>
- <ARMCrossStudioWindow activeProject="first" fileDialogDefaultFilter="*.c" autoConnectTarget="J-Link" buildConfiguration="Debug" sessionSettings="" debugSearchFileMap="" fileDialogInitialDirectory="C:/NORDIC/nRF5_SDK_17.0.0_9d13099/external/freertos/source/portable/MemMang" debugSearchPath="" autoConnectCapabilities="3711"/>
+ <ARMCrossStudioWindow activeProject="first" fileDialogDefaultFilter="" autoConnectTarget="J-Link" buildConfiguration="Debug" sessionSettings="" debugSearchFileMap="" fileDialogInitialDirectory="C:/NORDIC/nRF5_SDK_17.0.0_9d13099/components/libraries/queue" debugSearchPath="" autoConnectCapabilities="3199"/>
 </session>
