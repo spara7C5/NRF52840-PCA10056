@@ -100,8 +100,6 @@
       <file file_name="../../../main.c" />
       <file file_name="../config/sdk_config.h" />
       <file file_name="os_port_config.h" />
-      <file file_name="cmsis_os.h" />
-      <file file_name="cmsis_os2.c" />
       <file file_name="cmsis_os2.h" />
       <file file_name="net_config.h" />
       <file file_name="crypto_config.h" />
@@ -113,6 +111,8 @@
       <file file_name="modem_uart_driver.c">
         <configuration Name="Debug" build_exclude_from_build="No" />
       </file>
+      <file file_name="cmsis_os2.c" />
+      <file file_name="cmsis_os.h" />
     </folder>
     <folder Name="None">
       <file file_name="../../../../../../modules/nrfx/mdk/ses_startup_nrf52840.s" />
