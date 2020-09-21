@@ -50,7 +50,7 @@
 
 #define APN_PP_APN "iliad"
 
-#define APP_PPP_TIMEOUT 30000 // used also in AT-COMMAND reply timeout
+#define APP_PPP_TIMEOUT 20000 // used also in AT-COMMAND reply timeout
 
 /**
  * @brief Modem initialization
@@ -84,291 +84,296 @@ error_t modemInit(NetInterface *interface)
 
    TRACE_INFO("Power On Unit...\r\n");
 
-#ifdef SIM7000E
-//   HAL_GPIO_WritePin(MODEM_ON_GPIO_Port,MODEM_ON_Pin,GPIO_PIN_SET);
-//   osDelayTask(1000);
-//   TRACE_INFO("Power Key 1500 ms to shut down if ON or power ON if OFF...\r\n");
-//   HAL_GPIO_WritePin(POWERKEY_GPIO_Port,POWERKEY_Pin,GPIO_PIN_SET);
-//   osDelayTask(1500);
-//   HAL_GPIO_WritePin(POWERKEY_GPIO_Port,POWERKEY_Pin,GPIO_PIN_RESET);
-
-//   TRACE_INFO("Power Key 500 ms to power ON if OFF or keep ON if ON...\r\n");
-//   HAL_GPIO_WritePin(POWERKEY_GPIO_Port,POWERKEY_Pin,GPIO_PIN_SET);
-//   osDelayTask(500);
-//   HAL_GPIO_WritePin(POWERKEY_GPIO_Port,POWERKEY_Pin,GPIO_PIN_RESET);
+//#ifdef SIM7000E
+////   HAL_GPIO_WritePin(MODEM_ON_GPIO_Port,MODEM_ON_Pin,GPIO_PIN_SET);
+////   osDelayTask(1000);
+////   TRACE_INFO("Power Key 1500 ms to shut down if ON or power ON if OFF...\r\n");
+////   HAL_GPIO_WritePin(POWERKEY_GPIO_Port,POWERKEY_Pin,GPIO_PIN_SET);
+////   osDelayTask(1500);
+////   HAL_GPIO_WritePin(POWERKEY_GPIO_Port,POWERKEY_Pin,GPIO_PIN_RESET);
 //
-//   TRACE_INFO("Waiting 10000 ms for modem initialization...\r\n");
-//   osDelayTask(10000);
-#else
-   //osDelayTask(30000);
+////   TRACE_INFO("Power Key 500 ms to power ON if OFF or keep ON if ON...\r\n");
+////   HAL_GPIO_WritePin(POWERKEY_GPIO_Port,POWERKEY_Pin,GPIO_PIN_SET);
+////   osDelayTask(500);
+////   HAL_GPIO_WritePin(POWERKEY_GPIO_Port,POWERKEY_Pin,GPIO_PIN_RESET);
+////
+////   TRACE_INFO("Waiting 10000 ms for modem initialization...\r\n");
+////   osDelayTask(10000);
+//#else
+//   //osDelayTask(30000);
+//
+//   TRACE_INFO("Checking if modem is already on...");
+//   error = modemSendAtCommand(interface, "AT\r", modem_buffer, sizeof(modem_buffer));
+//   if (error){ // if no reply, modem is off, so switch it on
+//	   HAL_GPIO_WritePin(MODEM_ON_GPIO_Port,MODEM_ON_Pin,GPIO_PIN_SET);
+//	   osDelayTask(1000);
+//	   TRACE_INFO("Power Key 2500 ms...\r\n");
+//	   HAL_GPIO_WritePin(POWERKEY_GPIO_Port,POWERKEY_Pin,GPIO_PIN_SET);
+//	   osDelayTask(2500);
+//	   TRACE_INFO("Waiting 4000 ms for modem initialization...\r\n");
+//	   HAL_GPIO_WritePin(POWERKEY_GPIO_Port,POWERKEY_Pin,GPIO_PIN_RESET);
+//	   osDelayTask(4000);
+//   }
+//
+//#endif
+//   //Debug message
+//
+//#ifdef MODEM_FW_UPDATE
+//   TRACE_INFO("FW BLOCKED FOR MODEM UPDATE...\r\n");
+//   while(1);
+//#endif
+//
+//   TRACE_INFO("Modem Initializing starts:\r\n");
+//  
+////     while(1){
+////        error = modemSendAtCommand(interface, "AT\r", modem_buffer, 3);
+////        //Any error to report?
+////       if(!error)break;
+////          error = modemSendAtCommand(interface, "AT\r\nAT\r\nAT\r\nAT\r\n", modem_buffer, 3);
+////        
+////     }
+//
+//      
+//    //error = modemSendAtCommand(interface, "AT+CRESET\r", modem_buffer, sizeof(modem_buffer));
+//  
+//
+//   //Module identification
+//   error = modemSendAtCommand(interface, "AT+CFUN=1,0\r", modem_buffer, 12);
+//
+//#ifdef SIM7000E
+//   error = modemSendAtCommand(interface, "AT+CGSN\r", modem_buffer, sizeof(modem_buffer));
+//#else
+//   error = modemSendAtCommand(interface, "AT+QGSN\r", modem_buffer, sizeof(modem_buffer));
+//#endif
+//   //Any error to report?
+//   if(error){
+//	   return error;
+//   }
+//#ifdef SIM7000E
+//   char* resOK = strstr(modem_buffer, "OK");
+//     if (resOK!=NULL){
+//  	   char* ptrcgsn = strstr(modem_buffer, "+CGSN");
+//  	   if (ptrcgsn != NULL){
+//
+//  		   ptrcgsn+=5;
+//  		   char field[32];
+//  		   memset(field,0,32);
+//  		   strcpy(field,ptrcgsn);
+//  		   uint32_t start = 0;
+//  		   uint32_t fieldLen = 0;
+//  		   uint32_t lastIndexFound = 0;
+//		   uint8_t found=0;
+//
+//  		   char subfield[32];
+//  		   memset(subfield,0,32);
+//
+//
+//		
+//
+//
+//
+//  	   }
+//
+//     }
+//#else
+//   char* resOK = strstr(modem_buffer, "OK");
+//   if (resOK!=NULL){
+//	   char* pointer = strstr(modem_buffer, "+QGSN:");
+//	   if (pointer != NULL){
+//
+//		   char field[32];
+//		   memset(field,0,32);
+//		   uint32_t fieldLen = 0;
+//		   uint32_t lastIndexFound = 0;
+//
+//		   uint8_t found = findField(modem_buffer, 0, strnlen(modem_buffer,256) ,'\"',field, &fieldLen ,&lastIndexFound);
+//		   if (found){
+//
+//			   memset(field,0,32);
+//			   uint32_t start = lastIndexFound + 1;
+//			   fieldLen = 0;
+//
+//			   found = findField(modem_buffer, start, strnlen(modem_buffer,256) ,'\"',field, &fieldLen ,&lastIndexFound);
+//
+//			   if (found && isANumber(field) && strnlen(field,32)==15){
+//
+//				   if (memcmp(unitDescriptor.imei,field,15)){
+//					   memcpy(unitDescriptor.imei,field,15);
+//					   if(!writeDescriptor(&unitDescriptor)){
+//						   TRACE_DEBUG("Error: Can't update IMEI on memory\n");
+//					   }
+//				   }
+//
+//			   }
+//		   }
+//
+//
+//	   }
+//
+//   }
+//
+//#endif
+//
+//
+//      
+//   //Module identification
+//   error = modemSendAtCommand(interface, "AT+CGMM\r", modem_buffer, sizeof(modem_buffer));
+//   //Any error to report?
+//   if(error)
+//   {
+//	   return error;
+//   }
+//
+//   //Module identification
+//    error = modemSendAtCommand(interface, "ATI\r", modem_buffer, sizeof(modem_buffer));
+//    //Any error to report?
+//    if(error)
+//    {
+// 	   return error;
+//    }
+//   //Get software version
+//   error = modemSendAtCommand(interface, "AT+CGMR\r", modem_buffer, sizeof(modem_buffer));
+//   //Any error to report?
+//   if(error)
+//      {
+//   	   return error;
+//      }
+//
+//   //Enable verbose mode
+//   error = modemSendAtCommand(interface, "AT+CMEE=2\r", modem_buffer, sizeof(modem_buffer));
+//   //Any error to report?
+//   if(error)
+//      {
+//   	   return error;
+//      }
+//
+//   //Enable hardware flow control
+//   error = modemSendAtCommand(interface, "AT+IFC=0,0\r", modem_buffer, sizeof(modem_buffer));
+//   //Any error to report?
+//   if(error)
+//      {
+//   	   return error;
+//      }
+//
+//
+//
+//   //Query the ICCID of the SIM card
+//   error = modemSendAtCommand(interface, "AT+CCID\r", modem_buffer, sizeof(modem_buffer));
+//   //Any error to report?
+//   if(error)
+//      {
+//   	   return error;
+//      }
+//
+//   //Check if the SIM device needs the PIN code (if no, reply is :"EADYOK")
+//   error = modemSendAtCommand(interface, "AT+CPIN?\r", modem_buffer, sizeof(modem_buffer));
+//   //Any error to report?
+//   if(error)
+//      {
+//   	   return error;
+//      }
+//
+//   //Check whether the PIN code is required
+//   if(strstr(modem_buffer, "+CPIN: SIM PIN") != NULL)
+//   {
+//
+//      //Debug message
+//      TRACE_DEBUG("PIN code is required!\r\n");
+//      //Report an error
+//      return ERROR_FAILURE;
+//    }
+//
+//   //Check if the ATH command is enables
+//     error = modemSendAtCommand(interface, "AT+CPSI?\r", modem_buffer, sizeof(modem_buffer));
+//     //Any error to report?
+//     if(error)
+//        {
+//     	   return error;
+//        }
+//
+//  
+//
+//      // preferred mode selection
+//     error = modemSendAtCommand(interface, "AT+CNMP=2\r", modem_buffer, sizeof(modem_buffer));
+//        //Any error to report?
+//	if(error)
+//	   {
+//		   return error;
+//	   }
+//
+//  
+//
+//
+//
+//   //Wait for the module to be registered
+//   while(1)
+//   {
+//      //Check if the module is registered
+//
+//	  error = modemSendAtCommand(interface, "AT+CGATT?\r", modem_buffer, sizeof(modem_buffer));  
+//		//Any error to report?
+//		if(error)
+//			  {
+//			   return error;
+//			  }
+//
+//	   error = modemSendAtCommand(interface, "AT+CSQ\r", modem_buffer, sizeof(modem_buffer));
+//			   //Any error to report?
+//		if(error)
+//			 {
+//			   return error;
+//			 }
+//
+//      error = modemSendAtCommand(interface, "AT+CGREG?\r", modem_buffer, sizeof(modem_buffer));
+//      //Any error to report?
+//      if(error)
+//            {
+//         	   return error;
+//            }
+//
+//      //Check registration status
+//      if(strstr(modem_buffer, "+CGREG: 0,0") != NULL)
+//      {
+//    	 
+//    	 //provato ad usare i COPS ma ritorna CMEERROR: SIM NOT INSERTED
+////    	 error = modemSendAtCommand(interface, "AT+COPS=2\r", modem_buffer, sizeof(modem_buffer));
+////    	 error = modemSendAtCommand(interface, "AT+COPS=0\r", modem_buffer, sizeof(modem_buffer));
+//    	 return ERROR_FAILURE;
+////    	 if(error)
+////    	       {
+////    	    	   SetBit(status_register,MODEM_STATUS_FAILURE);
+////    	    	   return error;
+////    	       }
+//
+//         //Not registered
+//      }
+//       if(strstr(modem_buffer, "+CGREG: 0,1") != NULL)
+//      {
+//         //Registered (home network)
+//    	  break;
+//      }
+//      else if(strstr(modem_buffer, "+CGREG: 0,5") != NULL)
+//      {
+//         //Registered (roaming)
+//         break;
+//      }
+//
+//
+//      //Successful initialization
+//      osDelayTask(1000);
+//   }
+//
+//
+//      //Any error to report?
+//      if(error)
+//   	{
+//   		return error;
+//   	}
 
-   TRACE_INFO("Checking if modem is already on...");
-   error = modemSendAtCommand(interface, "AT\r", modem_buffer, sizeof(modem_buffer));
-   if (error){ // if no reply, modem is off, so switch it on
-	   HAL_GPIO_WritePin(MODEM_ON_GPIO_Port,MODEM_ON_Pin,GPIO_PIN_SET);
-	   osDelayTask(1000);
-	   TRACE_INFO("Power Key 2500 ms...\r\n");
-	   HAL_GPIO_WritePin(POWERKEY_GPIO_Port,POWERKEY_Pin,GPIO_PIN_SET);
-	   osDelayTask(2500);
-	   TRACE_INFO("Waiting 4000 ms for modem initialization...\r\n");
-	   HAL_GPIO_WritePin(POWERKEY_GPIO_Port,POWERKEY_Pin,GPIO_PIN_RESET);
-	   osDelayTask(4000);
-   }
-
-#endif
-   //Debug message
-
-#ifdef MODEM_FW_UPDATE
-   TRACE_INFO("FW BLOCKED FOR MODEM UPDATE...\r\n");
-   while(1);
-#endif
-
-   TRACE_INFO("Modem Initializing starts:\r\n");
-  
-
-     error = modemSendAtCommand(interface, "AT\r", modem_buffer, 3);
-        //Any error to report?
-        if(error){
-             
-             return error;
-        }
-
-      
-    //error = modemSendAtCommand(interface, "AT+CRESET\r", modem_buffer, sizeof(modem_buffer));
-  
-
-   //Module identification
-   error = modemSendAtCommand(interface, "AT+CFUN=1,0\r", modem_buffer, 12);
-
-#ifdef SIM7000E
-   error = modemSendAtCommand(interface, "AT+CGSN\r", modem_buffer, sizeof(modem_buffer));
-#else
-   error = modemSendAtCommand(interface, "AT+QGSN\r", modem_buffer, sizeof(modem_buffer));
-#endif
-   //Any error to report?
-   if(error){
-	   return error;
-   }
-#ifdef SIM7000E
-   char* resOK = strstr(modem_buffer, "OK");
-     if (resOK!=NULL){
-  	   char* ptrcgsn = strstr(modem_buffer, "+CGSN");
-  	   if (ptrcgsn != NULL){
-
-  		   ptrcgsn+=5;
-  		   char field[32];
-  		   memset(field,0,32);
-  		   strcpy(field,ptrcgsn);
-  		   uint32_t start = 0;
-  		   uint32_t fieldLen = 0;
-  		   uint32_t lastIndexFound = 0;
-		   uint8_t found=0;
-
-  		   char subfield[32];
-  		   memset(subfield,0,32);
-
-
-		
-
-
-
-  	   }
-
-     }
-#else
-   char* resOK = strstr(modem_buffer, "OK");
-   if (resOK!=NULL){
-	   char* pointer = strstr(modem_buffer, "+QGSN:");
-	   if (pointer != NULL){
-
-		   char field[32];
-		   memset(field,0,32);
-		   uint32_t fieldLen = 0;
-		   uint32_t lastIndexFound = 0;
-
-		   uint8_t found = findField(modem_buffer, 0, strnlen(modem_buffer,256) ,'\"',field, &fieldLen ,&lastIndexFound);
-		   if (found){
-
-			   memset(field,0,32);
-			   uint32_t start = lastIndexFound + 1;
-			   fieldLen = 0;
-
-			   found = findField(modem_buffer, start, strnlen(modem_buffer,256) ,'\"',field, &fieldLen ,&lastIndexFound);
-
-			   if (found && isANumber(field) && strnlen(field,32)==15){
-
-				   if (memcmp(unitDescriptor.imei,field,15)){
-					   memcpy(unitDescriptor.imei,field,15);
-					   if(!writeDescriptor(&unitDescriptor)){
-						   TRACE_DEBUG("Error: Can't update IMEI on memory\n");
-					   }
-				   }
-
-			   }
-		   }
-
-
-	   }
-
-   }
-
-#endif
-
-
-      
-   //Module identification
-   error = modemSendAtCommand(interface, "AT+CGMM\r", modem_buffer, sizeof(modem_buffer));
-   //Any error to report?
-   if(error)
-   {
-	   return error;
-   }
-
-   //Module identification
-    error = modemSendAtCommand(interface, "ATI\r", modem_buffer, sizeof(modem_buffer));
-    //Any error to report?
-    if(error)
-    {
- 	   return error;
-    }
-   //Get software version
-   error = modemSendAtCommand(interface, "AT+CGMR\r", modem_buffer, sizeof(modem_buffer));
-   //Any error to report?
-   if(error)
-      {
-   	   return error;
-      }
-
-   //Enable verbose mode
-   error = modemSendAtCommand(interface, "AT+CMEE=2\r", modem_buffer, sizeof(modem_buffer));
-   //Any error to report?
-   if(error)
-      {
-   	   return error;
-      }
-
-   //Enable hardware flow control
-   error = modemSendAtCommand(interface, "AT+IFC=0,0\r", modem_buffer, sizeof(modem_buffer));
-   //Any error to report?
-   if(error)
-      {
-   	   return error;
-      }
-
-
-
-   //Query the ICCID of the SIM card
-   error = modemSendAtCommand(interface, "AT+CCID\r", modem_buffer, sizeof(modem_buffer));
-   //Any error to report?
-   if(error)
-      {
-   	   return error;
-      }
-
-   //Check if the SIM device needs the PIN code (if no, reply is :"EADYOK")
-   error = modemSendAtCommand(interface, "AT+CPIN?\r", modem_buffer, sizeof(modem_buffer));
-   //Any error to report?
-   if(error)
-      {
-   	   return error;
-      }
-
-   //Check whether the PIN code is required
-   if(strstr(modem_buffer, "+CPIN: SIM PIN") != NULL)
-   {
-
-      //Debug message
-      TRACE_DEBUG("PIN code is required!\r\n");
-      //Report an error
-      return ERROR_FAILURE;
-    }
-
-   //Check if the ATH command is enables
-     error = modemSendAtCommand(interface, "AT+CPSI?\r", modem_buffer, sizeof(modem_buffer));
-     //Any error to report?
-     if(error)
-        {
-     	   return error;
-        }
-
-  
-
-      // preferred mode selection
-     error = modemSendAtCommand(interface, "AT+CNMP=2\r", modem_buffer, sizeof(modem_buffer));
-        //Any error to report?
-	if(error)
-	   {
-		   return error;
-	   }
-
-  
-
-
-
-   //Wait for the module to be registered
-   while(1)
-   {
-      //Check if the module is registered
-
-	  error = modemSendAtCommand(interface, "AT+COPS?\r", modem_buffer, sizeof(modem_buffer));
-		//Any error to report?
-		if(error)
-			  {
-			   return error;
-			  }
-
-	   error = modemSendAtCommand(interface, "AT+CSQ\r", modem_buffer, sizeof(modem_buffer));
-			   //Any error to report?
-		if(error)
-			 {
-			   return error;
-			 }
-
-      error = modemSendAtCommand(interface, "AT+CGREG?\r", modem_buffer, sizeof(modem_buffer));
-      //Any error to report?
-      if(error)
-            {
-         	   return error;
-            }
-
-      //Check registration status
-      if(strstr(modem_buffer, "+CGREG: 0,0") != NULL)
-      {
-    	 
-    	 //provato ad usare i COPS ma ritorna CMEERROR: SIM NOT INSERTED
-//    	 error = modemSendAtCommand(interface, "AT+COPS=2\r", modem_buffer, sizeof(modem_buffer));
-//    	 error = modemSendAtCommand(interface, "AT+COPS=0\r", modem_buffer, sizeof(modem_buffer));
-    	 return ERROR_FAILURE;
-//    	 if(error)
-//    	       {
-//    	    	   SetBit(status_register,MODEM_STATUS_FAILURE);
-//    	    	   return error;
-//    	       }
-
-         //Not registered
-      }
-       if(strstr(modem_buffer, "+CGREG: 0,1") != NULL)
-      {
-         //Registered (home network)
-    	  break;
-      }
-      else if(strstr(modem_buffer, "+CGREG: 0,5") != NULL)
-      {
-         //Registered (roaming)
-         break;
-      }
-
-
-      //Successful initialization
-      osDelayTask(1000);
-   }
-
-
-      //Any error to report?
-      if(error)
-   	{
-   		return error;
-   	}
+    error = modemSendAtCommand(interface, "AT+CPIN?\r", modem_buffer, sizeof(modem_buffer)); 
+    error = modemSendAtCommand(interface, "AT+CSQ\r", modem_buffer, sizeof(modem_buffer)); 
+    error = modemSendAtCommand(interface, "AT+CGATT?\r", modem_buffer, sizeof(modem_buffer));  
+    error = modemSendAtCommand(interface, "AT+COPS?\r", modem_buffer, sizeof(modem_buffer)); 
 
 
     error = modemSendAtCommand(interface, "AT+CFUN=0\r", modem_buffer, sizeof(modem_buffer)); 
@@ -377,7 +382,7 @@ error_t modemInit(NetInterface *interface)
     error = modemSendAtCommandPLUS(interface, "AT+CFUN=1\r", modem_buffer, sizeof(modem_buffer),"READY"); 
 //    //Check PS service
 //    vTaskDelay(5000);
-    error = modemSendAtCommand(interface, "AT+CGATT?\r", modem_buffer, sizeof(modem_buffer));  
+    
 
     
     //Query the APN delivered by the network after the CAT-M or NB-IOT network is successfully registered.
@@ -391,9 +396,9 @@ error_t modemInit(NetInterface *interface)
 //
     error = modemSendAtCommand(interface,send_buffer , modem_buffer, strlen(send_buffer));
 //
-//    error = modemSendAtCommand(interface, "AT+CNACT=1\r", modem_buffer, sizeof(modem_buffer));  
+    error = modemSendAtCommand(interface, "AT+CNACT=1\r", modem_buffer, sizeof(modem_buffer));  
 //
-//    error = modemSendAtCommand(interface, "AT+CNACT?\r", modem_buffer, sizeof(modem_buffer)); 
+    error = modemSendAtCommand(interface, "AT+CNACT?\r", modem_buffer, sizeof(modem_buffer)); 
    //Successful processing
 
    return NO_ERROR;
@@ -667,9 +672,9 @@ error_t modemSendAtCommand(NetInterface *interface,const char_t *command, char_t
 
    //Debug message
     
-   if (size<50){
+   //if (size<50){
    TRACE_DEBUG("AT command:  %s\n",command);
-  }
+  //}
    //Send AT command
    error = pppSendAtCommand(interface, command);
     vTaskDelay(5);
@@ -692,18 +697,18 @@ error_t modemSendAtCommand(NetInterface *interface,const char_t *command, char_t
             break;
          }
 
-         if(strstr(response, "SIM not inserted")){
-        	 error=ERROR_SIM_NOT_INSERTED;
-        	 TRACE_DEBUG("AT response: %s", response);
-        	 break;
-         }
-
-         if(strstr(response, "ERROR")||
-            strstr(response, "0.0.0.0")){
-        	 error=ERROR_FROM_PPP_INTERFACE;
-        	 TRACE_DEBUG("AT response: %s", response);
-        	 break;
-         }
+//         if(strstr(response, "SIM not inserted")){
+//        	 error=ERROR_SIM_NOT_INSERTED;
+//        	 TRACE_DEBUG("AT response: %s", response);
+//        	 break;
+//         }
+//
+//         if(strstr(response, "ERROR")||
+//            strstr(response, "0.0.0.0")){
+//        	 error=ERROR_FROM_PPP_INTERFACE;
+//        	 TRACE_DEBUG("AT response: %s", response);
+//        	 break;
+//         }
 
          //Status string received?
          if(strstr(response, "OK") ||

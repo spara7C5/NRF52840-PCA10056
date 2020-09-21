@@ -75,7 +75,7 @@ error_t uartInit(void)
 	//Debug message
 
 
-	(void)nrf_drv_uart_rx(&UARTE_inst0, rx_buffer, 1);
+	(void)nrf_drv_uart_rx(&UARTE_inst1, rx_buffer, 1);
 	//Successful processing
 
 
@@ -118,18 +118,19 @@ void uartStartTx(void)
 
 
 
-     if (!nrf_drv_uart_tx_in_progress(&UARTE_inst0))
+     if (!nrf_drv_uart_tx_in_progress(&UARTE_inst1))
      {
             (void)pppHdlcDriverReadTxQueue(interface, &c);
 		 //Valid character read?
-		 if(c != EOF)
+		 if(c != 0xff)
 		 {
 			//Send data byte
-			(void)nrf_drv_uart_tx(&UARTE_inst0, &c, 1);
+			(void)nrf_drv_uart_tx(&UARTE_inst1, (uint8_t*)&c, 1);
                         
 		 }
 		 else
 		 {
+                    
 			//Disable TXE interrupt
 			 //(void)nrf_drv_uart_tx(&UARTE_inst0, &a, 1);
 		 }
@@ -227,7 +228,8 @@ error_t uartDeinit(void){
 
 void uart_drv_event_handler(nrf_drv_uart_event_t * p_event, void* p_context)
 {
-    int_t c;
+    int_t c_int;
+    uint8_t c;
     uint32_t err_code;
 
     switch (p_event->type)
@@ -239,27 +241,30 @@ void uart_drv_event_handler(nrf_drv_uart_event_t * p_event, void* p_context)
                
                // A new start RX is needed to continue to receive data
               (void) pppHdlcDriverWriteRxQueue(interface, p_event->data.rxtx.p_data[0]);
-              if (p_event->data.rxtx.p_data[0]==250){
-              __NOP();
-              }
               
               
             }
-            (void)nrf_drv_uart_rx(&UARTE_inst0, &rx_buffer, 1);
+            (void)nrf_drv_uart_rx(&UARTE_inst1, &rx_buffer, 1);
 
 
             break;
 
         case NRF_DRV_UART_EVT_ERROR:
-            //app_uart_event.evt_type                 = APP_UART_COMMUNICATION_ERROR;
-            //app_uart_event.data.error_communication = p_event->data.error.error_mask;
-            //(void)nrf_drv_uart_rx(&UARTE_inst0, rx_buffer, 1);
+            __NOP();
+            
+//            (void)nrf_drv_uart_rx(&UARTE_inst1, &rx_buffer, 1);
             
             break;
 
         case NRF_DRV_UART_EVT_TX_DONE:
-             (void)pppHdlcDriverReadTxQueue(interface, &c);
-             if (c!=EOF) (void)nrf_drv_uart_tx(&UARTE_inst0, &c, 1);
+             (void)pppHdlcDriverReadTxQueue(interface, &c_int);
+             c=(uint8_t)c_int;
+             if (c!=0xff){
+              (void)nrf_drv_uart_tx(&UARTE_inst1, &c, 1);
+              }else{
+                 c++;
+              }
+
 
 
             break;

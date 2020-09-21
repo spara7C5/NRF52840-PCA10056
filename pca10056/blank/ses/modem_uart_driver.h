@@ -17,8 +17,7 @@
 #endif
 
 //UART driver
- const UartDriver uartDriver;
-extern nrf_drv_uart_t UARTE_inst0;
+extern nrf_drv_uart_t UARTE_inst1;
 extern NetInterface *interface;
 //External interrupt related functions
 error_t uartInit(void);

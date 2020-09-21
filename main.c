@@ -77,6 +77,7 @@
 #include "modem.h"
 #include "core/net.h"
 #include "debug.h"
+#include "modem_uart_driver.h"
 
 #include "cmsis_os2.h"
 
@@ -112,7 +113,7 @@ static nrf_drv_pwm_t m_pwm0 = NRF_DRV_PWM_INSTANCE(0);
 
 extern void uart_drv_event_handler(nrf_drv_uart_event_t * p_event, void* p_context);
 nrf_drv_uart_t UARTE_inst0=NRF_DRV_UART_INSTANCE(0);
-//nrf_drv_uart_t UARTE_inst1=NRF_DRV_UART_INSTANCE(1);
+nrf_drv_uart_t UARTE_inst1=NRF_DRV_UART_INSTANCE(1);
 
 typedef enum {
   SUCCESS=0,
@@ -347,7 +348,7 @@ void bsp_ext_init(void){
       config.pselrts = RTS_PIN_NUMBER;
       config.pselrxd = RX_PIN_NUMBER;
       config.pseltxd = TX_PIN_NUMBER;
-      //UARTE_inst0.inst_idx=1;
+      UARTE_inst0.inst_idx=1;
       err_code=nrf_drv_uart_init(&UARTE_inst0,&config,uart_drv_event_handler);
       
       APP_ERROR_CHECK(err_code);
@@ -371,10 +372,9 @@ void bsp_ext_init(void){
       config.pselrts = MODEM_RTS;
       config.pselrxd = MODEM_RX;
       config.pseltxd = MODEM_TX;
-      //UARTE_inst1.uarte.drv_inst_idx=1;
-//      err_code=nrf_drv_uart_init(&UARTE_inst1,&config,uart_drv_event_handler);
-//      (void)nrf_drv_uart_rx(&UARTE_inst1, rx_buffer, 1);
-//      APP_ERROR_CHECK(err_code);
+      UARTE_inst1.uarte.drv_inst_idx=1;
+      err_code=nrf_drv_uart_init(&UARTE_inst1,&config,uart_drv_event_handler);
+      APP_ERROR_CHECK(err_code);
 
    }
 
@@ -458,35 +458,50 @@ static void main_task_function (void * pvParameter){
     BUZZPRESS;
     if(osThreadFlagsWait(MESS_REC_SIGNAL,0,MESS_REPLY_TIMEOUT)==osErrorTimeout) {
       BUZZERR
+    }else{
+    
+      TRACE_INFO("message:"BYTE_TO_BINARY_PATTERN"\n",BYTE_TO_BINARY(datain_buff));
+      osThreadFlagsSet(dataIN_task_handle,MESS_PROC_SIGNAL);
     }
     
-    TRACE_INFO("message:"BYTE_TO_BINARY_PATTERN"\n",BYTE_TO_BINARY(datain_buff));
-    osThreadFlagsSet(dataIN_task_handle,MESS_PROC_SIGNAL);
   }
 }
 
 int main(void)
 {
 
+
+if (NRF_UICR->REGOUT0 != UICR_REGOUT0_VOUT_1V8) 
+{
+    NRF_NVMC->CONFIG = NVMC_CONFIG_WEN_Wen << NVMC_CONFIG_WEN_Pos;
+    while (NRF_NVMC->READY == NVMC_READY_READY_Busy){}
+    NRF_UICR->REGOUT0 = UICR_REGOUT0_VOUT_1V8;
+
+    NRF_NVMC->CONFIG = NVMC_CONFIG_WEN_Ren << NVMC_CONFIG_WEN_Pos;
+    while (NRF_NVMC->READY == NVMC_READY_READY_Busy){}
+}
+   
+
     uint32_t t=0;
     t=NRFX_UART_ENABLED_COUNT;
     ret_code_t err_code;
     log_init();
+    printf("%u\n\r",NRF_UICR->REGOUT0);
     /* Initialize clock driver for better time accuracy in FREERTOS */
     err_code = nrf_drv_clock_init();
     APP_ERROR_CHECK(err_code);
 
     /* Configure LED-pins as outputs */
     bsp_board_init(BSP_INIT_LEDS);
-    uart_tool_init();
-    //uart_modem_init();
+    //uart_tool_init();
+    uart_modem_init();
     timer_init();
     bsp_ext_init();
      
 
- 
+    
     /* Create task for LED0 blinking with priority set to 2 */
-    //UNUSED_VARIABLE(xTaskCreate(modem_task_function, "MODEM", configMINIMAL_STACK_SIZE +500 , NULL, 2, &modem_task_handle));
+    UNUSED_VARIABLE(xTaskCreate(modem_task_function, "MODEM", configMINIMAL_STACK_SIZE +500 , NULL, 2, &modem_task_handle));
     UNUSED_VARIABLE(xTaskCreate(dataIN_task_function, "DATAIN", configMINIMAL_STACK_SIZE +200 , NULL, 2, &dataIN_task_handle));
     UNUSED_VARIABLE(xTaskCreate(main_task_function, "MAIN", configMINIMAL_STACK_SIZE +200 , NULL, 2, &main_task_handle));
 
