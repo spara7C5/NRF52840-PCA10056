@@ -340,7 +340,7 @@ void bsp_ext_init(void){
       ret_code_t err_code;
   
       nrf_drv_uart_config_t config = NRF_DRV_UART_DEFAULT_CONFIG;
-      config.baudrate = (nrf_uart_baudrate_t)NRF_UART_BAUDRATE_115200;
+      config.baudrate = (nrf_uart_baudrate_t)NRF_UART_BAUDRATE_38400;
       config.hwfc = (UART_HWFC == APP_UART_FLOW_CONTROL_DISABLED) ? NRF_UART_HWFC_DISABLED : NRF_UART_HWFC_ENABLED;
       config.interrupt_priority = APP_IRQ_PRIORITY_LOWEST;
       config.parity = false ? NRF_UART_PARITY_INCLUDED : NRF_UART_PARITY_EXCLUDED;

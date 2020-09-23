@@ -50,7 +50,7 @@
 
 #define APN_PP_APN "iliad"
 
-#define APP_PPP_TIMEOUT 20000 // used also in AT-COMMAND reply timeout
+#define APP_PPP_TIMEOUT 30000 // used also in AT-COMMAND reply timeout
 
 /**
  * @brief Modem initialization
@@ -62,13 +62,15 @@
 NetInterface *interface;
 uint32_t status_register = 0x0;
 
-char_t modem_buffer[256] ={};
+char_t modem_buffer[2048] ={};
 char_t send_buffer[256] ={};
 
 
 error_t modemSendAtCommandPRE(NetInterface *interface,const char_t *command, char_t *response, size_t size, char* str);
 error_t modemSendAtCommandPLUS(NetInterface *interface,const char_t *command, char_t *response, size_t size, char* str);
-//
+error_t modemSendAtCommandHTTP(NetInterface *interface,const char_t *command, char_t *response, size_t size);
+
+
 error_t modemInit(NetInterface *interface)
 {
    error_t error;
@@ -123,15 +125,23 @@ error_t modemInit(NetInterface *interface)
 //   while(1);
 //#endif
 //
-//   TRACE_INFO("Modem Initializing starts:\r\n");
-//  
-////     while(1){
-////        error = modemSendAtCommand(interface, "AT\r", modem_buffer, 3);
-////        //Any error to report?
-////       if(!error)break;
-////          error = modemSendAtCommand(interface, "AT\r\nAT\r\nAT\r\nAT\r\n", modem_buffer, 3);
-////        
-////     }
+   TRACE_INFO("Modem Initializing starts:\r\n");
+  
+       ///// MESSAGES FOR SYNCHRONIZATION /////
+       for(uint8_t i=0;i<4;i++){
+       error = pppSendAtCommand(interface, "AT\r");
+       vTaskDelay(1000);
+       }
+       /////////////////////////////////////////
+
+       error = modemSendAtCommand(interface, "AT\r", modem_buffer, 3);
+
+//     while(1){
+//        error = modemSendAtCommand(interface, "AT\r", modem_buffer, 3);
+//        //Any error to report?
+//       if(!error)break;
+//        
+//     }
 //
 //      
 //    //error = modemSendAtCommand(interface, "AT+CRESET\r", modem_buffer, sizeof(modem_buffer));
@@ -225,14 +235,14 @@ error_t modemInit(NetInterface *interface)
 //   }
 //
 //   //Module identification
-//    error = modemSendAtCommand(interface, "ATI\r", modem_buffer, sizeof(modem_buffer));
+    error = modemSendAtCommand(interface, "ATI\r", modem_buffer, sizeof(modem_buffer));
 //    //Any error to report?
 //    if(error)
 //    {
 // 	   return error;
 //    }
 //   //Get software version
-//   error = modemSendAtCommand(interface, "AT+CGMR\r", modem_buffer, sizeof(modem_buffer));
+   error = modemSendAtCommand(interface, "AT+CGMR\r", modem_buffer, sizeof(modem_buffer));
 //   //Any error to report?
 //   if(error)
 //      {
@@ -240,7 +250,7 @@ error_t modemInit(NetInterface *interface)
 //      }
 //
 //   //Enable verbose mode
-//   error = modemSendAtCommand(interface, "AT+CMEE=2\r", modem_buffer, sizeof(modem_buffer));
+   error = modemSendAtCommand(interface, "AT+CMEE=2\r", modem_buffer, sizeof(modem_buffer));
 //   //Any error to report?
 //   if(error)
 //      {
@@ -305,63 +315,9 @@ error_t modemInit(NetInterface *interface)
 //
 //
 //
-//   //Wait for the module to be registered
-//   while(1)
-//   {
-//      //Check if the module is registered
-//
-//	  error = modemSendAtCommand(interface, "AT+CGATT?\r", modem_buffer, sizeof(modem_buffer));  
-//		//Any error to report?
-//		if(error)
-//			  {
-//			   return error;
-//			  }
-//
-//	   error = modemSendAtCommand(interface, "AT+CSQ\r", modem_buffer, sizeof(modem_buffer));
-//			   //Any error to report?
-//		if(error)
-//			 {
-//			   return error;
-//			 }
-//
-//      error = modemSendAtCommand(interface, "AT+CGREG?\r", modem_buffer, sizeof(modem_buffer));
-//      //Any error to report?
-//      if(error)
-//            {
-//         	   return error;
-//            }
-//
-//      //Check registration status
-//      if(strstr(modem_buffer, "+CGREG: 0,0") != NULL)
-//      {
-//    	 
-//    	 //provato ad usare i COPS ma ritorna CMEERROR: SIM NOT INSERTED
-////    	 error = modemSendAtCommand(interface, "AT+COPS=2\r", modem_buffer, sizeof(modem_buffer));
-////    	 error = modemSendAtCommand(interface, "AT+COPS=0\r", modem_buffer, sizeof(modem_buffer));
-//    	 return ERROR_FAILURE;
-////    	 if(error)
-////    	       {
-////    	    	   SetBit(status_register,MODEM_STATUS_FAILURE);
-////    	    	   return error;
-////    	       }
-//
-//         //Not registered
-//      }
-//       if(strstr(modem_buffer, "+CGREG: 0,1") != NULL)
-//      {
-//         //Registered (home network)
-//    	  break;
-//      }
-//      else if(strstr(modem_buffer, "+CGREG: 0,5") != NULL)
-//      {
-//         //Registered (roaming)
-//         break;
-//      }
-//
-//
-//      //Successful initialization
-//      osDelayTask(1000);
-//   }
+
+
+
 //
 //
 //      //Any error to report?
@@ -370,33 +326,90 @@ error_t modemInit(NetInterface *interface)
 //   		return error;
 //   	}
 
-    error = modemSendAtCommand(interface, "AT+CPIN?\r", modem_buffer, sizeof(modem_buffer)); 
-    error = modemSendAtCommand(interface, "AT+CSQ\r", modem_buffer, sizeof(modem_buffer)); 
-    error = modemSendAtCommand(interface, "AT+CGATT?\r", modem_buffer, sizeof(modem_buffer));  
-    error = modemSendAtCommand(interface, "AT+COPS?\r", modem_buffer, sizeof(modem_buffer)); 
+  
 
-
+      //////     APN MANUAL CONFIGURATION
+    error = modemSendAtCommand(interface, "AT+CGNAPN\r", modem_buffer, sizeof(modem_buffer));    
     error = modemSendAtCommand(interface, "AT+CFUN=0\r", modem_buffer, sizeof(modem_buffer)); 
 //
     error = modemSendAtCommand(interface, "AT+CGDCONT=1,\"IP\",\"wap.tim.it\"\r", modem_buffer, sizeof(modem_buffer)); 
-    error = modemSendAtCommandPLUS(interface, "AT+CFUN=1\r", modem_buffer, sizeof(modem_buffer),"READY"); 
-//    //Check PS service
-//    vTaskDelay(5000);
-    
+    error = modemSendAtCommand(interface, "AT+CFUN=1\r", modem_buffer, sizeof(modem_buffer)); 
+    osDelayTask(5000);
+
+
+   //Wait for the module to be registered
+   while(1)
+   {
+      //Check if the module is registered
+
+	  error = modemSendAtCommand(interface, "AT+CGATT?\r", modem_buffer, sizeof(modem_buffer));  
+		//Any error to report?
+		if(error)
+			  {
+			   return error;
+			  }
+
+	   error = modemSendAtCommand(interface, "AT+CSQ\r", modem_buffer, sizeof(modem_buffer));
+			   //Any error to report?
+		if(error)
+			 {
+			   return error;
+			 }
+
+      error = modemSendAtCommand(interface, "AT+CGREG?\r", modem_buffer, sizeof(modem_buffer));
+      //Any error to report?
+      if(error)
+            {
+         	   return error;
+            }
+
+      //Check registration status
+      if(strstr(modem_buffer, "+CGREG: 0,0") != NULL)
+      {
+    	 
+    	 //provato ad usare i COPS ma ritorna CMEERROR: SIM NOT INSERTED
+//    	 error = modemSendAtCommand(interface, "AT+COPS=2\r", modem_buffer, sizeof(modem_buffer));
+//    	 error = modemSendAtCommand(interface, "AT+COPS=0\r", modem_buffer, sizeof(modem_buffer));
+    	 return ERROR_FAILURE;
+//    	 if(error)
+//    	       {
+//    	    	   SetBit(status_register,MODEM_STATUS_FAILURE);
+//    	    	   return error;
+//    	       }
+
+         //Not registered
+      }
+       if(strstr(modem_buffer, "+CGREG: 0,1") != NULL)
+      {
+         //Registered (home network)
+    	  break;
+      }
+      else if(strstr(modem_buffer, "+CGREG: 0,5") != NULL)
+      {
+         //Registered (roaming)
+         break;
+      }
+
+
+      //Successful initialization
+      osDelayTask(1000);
+   } // end wait module to be registered
+
+
+
+
+    error = modemSendAtCommand(interface, "AT+CGATT?\r", modem_buffer, sizeof(modem_buffer));  
 
     
     //Query the APN delivered by the network after the CAT-M or NB-IOT network is successfully registered.
     error = modemSendAtCommand(interface, "AT+CGNAPN\r", modem_buffer, sizeof(modem_buffer));  
 //
-//    error = modemSendAtCommand(interface, "AT+CNCFG=?\r", modem_buffer, sizeof(modem_buffer)); 
-//
-//    error = modemSendAtCommand(interface, "AT+CNCFG?\r", modem_buffer, sizeof(modem_buffer)); 
 
     memcpy(&send_buffer[0],"AT+CNCFG=0,1,\"ibox.tim.it\"\r\0",256);
 //
     error = modemSendAtCommand(interface,send_buffer , modem_buffer, strlen(send_buffer));
 //
-    error = modemSendAtCommand(interface, "AT+CNACT=1\r", modem_buffer, sizeof(modem_buffer));  
+    error = modemSendAtCommandPLUS(interface, "AT+CNACT=0,1\r", modem_buffer, sizeof(modem_buffer),"ACTIVE");  
 //
     error = modemSendAtCommand(interface, "AT+CNACT?\r", modem_buffer, sizeof(modem_buffer)); 
    //Successful processing
@@ -414,7 +427,6 @@ error_t modemInit(NetInterface *interface)
 error_t modemCall(NetInterface *interface)
 {
    error_t error;
-   char_t modem_buffer[256];
    char post_buffer[256];
 
  
@@ -465,19 +477,43 @@ error_t modemCall(NetInterface *interface)
     //////////////////// HTTP CONFIG ///////////////////////////////
     
 //    error = modemSendAtCommand(interface, "AT+SAPBR=3,1,\"Contype\",\"GPRS\"\r", modem_buffer, sizeof(modem_buffer));
-    error = modemSendAtCommand(interface, "AT+SAPBR=3,1,\"APN\",\"wap.tim.it\"\r", modem_buffer, sizeof(modem_buffer));
-    if((modemSendAtCommand(interface, "AT+SAPBR=2,1\r", modem_buffer, sizeof(modem_buffer)))!=NO_ERROR){
-      while((modemSendAtCommand(interface, "AT+SAPBR=1,1\r", modem_buffer, sizeof(modem_buffer)))!=NO_ERROR)
-      {
-      vTaskDelay(1000);
-      };
-    }
-    error = modemSendAtCommand(interface, "AT+SAPBR=2,1\r", modem_buffer, sizeof(modem_buffer));
-    while((modemSendAtCommand(interface, "AT+HTTPINIT\r", modem_buffer, sizeof(modem_buffer)))!=NO_ERROR){
-      modemSendAtCommand(interface,"AT+HTTPTERM\r",modem_buffer, sizeof(modem_buffer)); 
-    };
+//    error = modemSendAtCommand(interface, "AT+SAPBR=3,1,\"APN\",\"wap.tim.it\"\r", modem_buffer, sizeof(modem_buffer));
+//    if((modemSendAtCommand(interface, "AT+SAPBR=2,1\r", modem_buffer, sizeof(modem_buffer)))!=NO_ERROR){
+//      while((modemSendAtCommand(interface, "AT+SAPBR=1,1\r", modem_buffer, sizeof(modem_buffer)))!=NO_ERROR)
+//      {
+//      vTaskDelay(1000);
+//      };
+//    }
+//    error = modemSendAtCommand(interface, "AT+SAPBR=2,1\r", modem_buffer, sizeof(modem_buffer));
+//    while((modemSendAtCommand(interface, "AT+HTTPINIT\r", modem_buffer, sizeof(modem_buffer)))!=NO_ERROR){
+//      modemSendAtCommand(interface,"AT+HTTPTERM\r",modem_buffer, sizeof(modem_buffer)); 
+//    };
      
     //////////////// END HTTP CONFIG ///////////////////////////////////////
+
+    ////////// SIM7000 HTTP GET /////////////////////////////////
+    error = modemSendAtCommand(interface, "AT+SHCONF=\"URL\",\"http://httpbin.org\"\r", modem_buffer, sizeof(modem_buffer)); 
+    error = modemSendAtCommand(interface, "AT+SHCONF=\"BODYLEN\",1024\r", modem_buffer, sizeof(modem_buffer)); 
+    error = modemSendAtCommand(interface, "AT+SHCONF=\"HEADERLEN\",350\r", modem_buffer, sizeof(modem_buffer)); 
+    error = modemSendAtCommand(interface, "AT+SHCONN\r", modem_buffer, sizeof(modem_buffer)); 
+    error = modemSendAtCommand(interface, "AT+SHSTATE?\r", modem_buffer, sizeof(modem_buffer)); 
+    error = modemSendAtCommand(interface, "AT+SHCHEAD\r", modem_buffer, sizeof(modem_buffer)); 
+    error = modemSendAtCommand(interface, "AT+SHAHEAD=\"User-Agent\",\"curl/7.47.0\"\r", modem_buffer, sizeof(modem_buffer)); 
+    error = modemSendAtCommand(interface, "AT+SHAHEAD=\"Cache-control\",\"no-cache\"\r", modem_buffer, sizeof(modem_buffer)); 
+    error = modemSendAtCommand(interface, "AT+SHAHEAD=\"Connection\",\"keep-alive\"\r", modem_buffer, sizeof(modem_buffer)); 
+    error = modemSendAtCommand(interface, "AT+SHAHEAD=\"Accept\",\"*/*\"\r", modem_buffer, sizeof(modem_buffer)); 
+    error = modemSendAtCommandPLUS(interface, "AT+SHREQ=\"/get?user=jack&password=123\",1\r", modem_buffer, sizeof(modem_buffer),"SHREQ");
+    char *token=strtok(modem_buffer, ",");
+    uint8_t cnt=1;
+    while(cnt<2+1){
+      token = strtok(NULL, ",");
+      cnt++;
+    }
+    uint16_t getlen=atoi(token);
+    sprintf(&send_buffer[0],"AT+SHREAD=0,%u\r",getlen);
+    error = modemSendAtCommandHTTP(interface, send_buffer, modem_buffer, sizeof(modem_buffer));
+    error = modemSendAtCommand(interface, "AT+SHDISC\r", modem_buffer, sizeof(modem_buffer));
+    ////////// END SIM7000 HTTP GET /////////////////////////////
 
 
     /////////////// HTTP GET //////////////////////
@@ -488,18 +524,18 @@ error_t modemCall(NetInterface *interface)
     ////// END HTTP GET ////////////////////
 
     ///////////////////// HTTP POST///////////////////////////
-    error = modemSendAtCommand(interface, "AT+HTTPPARA=\"URL\",\"test.carion.it\"\r", modem_buffer, sizeof(modem_buffer));  
-    error = modemSendAtCommand(interface, "AT+HTTPPARA=\"CID\",1\r", modem_buffer, sizeof(modem_buffer)); 
-    memset(post_buffer,0,256);
-    sprintf(&post_buffer[0],"POST /test HTTP/1.1\r\nHost: 10.46.101.47\r\nContent-Type: application/x-www-form-urlencoded\r\nContent-Length: 4\r\n\r\nciaone");
-    uint8_t l=strlen(post_buffer);
-    sprintf(&modem_buffer[0],"AT+HTTPDATA=%u,10000\r",l);
-    while((modemSendAtCommandPRE(interface,modem_buffer , modem_buffer, sizeof(modem_buffer), "DOWNLOAD"))!=NO_ERROR)
-    {
-    vTaskDelay(1000);
-    }; 
-    error = modemSendAtCommand(interface,post_buffer , modem_buffer, l); 
-    error = modemSendAtCommandPLUS(interface,"AT+HTTPACTION=1\r",modem_buffer , sizeof(modem_buffer),"HTTPACTION"); 
+//    error = modemSendAtCommand(interface, "AT+HTTPPARA=\"URL\",\"test.carion.it\"\r", modem_buffer, sizeof(modem_buffer));  
+//    error = modemSendAtCommand(interface, "AT+HTTPPARA=\"CID\",1\r", modem_buffer, sizeof(modem_buffer)); 
+//    memset(post_buffer,0,256);
+//    sprintf(&post_buffer[0],"POST /test HTTP/1.1\r\nHost: 10.46.101.47\r\nContent-Type: application/x-www-form-urlencoded\r\nContent-Length: 4\r\n\r\nciaone");
+//    uint8_t l=strlen(post_buffer);
+//    sprintf(&modem_buffer[0],"AT+HTTPDATA=%u,10000\r",l);
+//    while((modemSendAtCommandPRE(interface,modem_buffer , modem_buffer, sizeof(modem_buffer), "DOWNLOAD"))!=NO_ERROR)
+//    {
+//    vTaskDelay(1000);
+//    }; 
+//    error = modemSendAtCommand(interface,post_buffer , modem_buffer, l); 
+//    error = modemSendAtCommandPLUS(interface,"AT+HTTPACTION=1\r",modem_buffer , sizeof(modem_buffer),"HTTPACTION"); 
 
     ////////// END HTTP POST /////////////////////////////
 
@@ -697,27 +733,15 @@ error_t modemSendAtCommand(NetInterface *interface,const char_t *command, char_t
             break;
          }
 
-//         if(strstr(response, "SIM not inserted")){
-//        	 error=ERROR_SIM_NOT_INSERTED;
-//        	 TRACE_DEBUG("AT response: %s", response);
-//        	 break;
-//         }
-//
-//         if(strstr(response, "ERROR")||
-//            strstr(response, "0.0.0.0")){
-//        	 error=ERROR_FROM_PPP_INTERFACE;
-//        	 TRACE_DEBUG("AT response: %s", response);
-//        	 break;
-//         }
 
          //Status string received?
          if(strstr(response, "OK") ||
             strstr(response, "CONNECT") ||
             strstr(response, "RING") ||
-            strstr(response, "+HTTPREAD:") ||
+            strstr(response, "DEACTIVE") ||
             strstr(response, "NO CARRIER") ||
             strstr(response, "~!NO CARRIER") ||
-            //strstr(response, "ERROR") ||
+            strstr(response, "ERROR") ||
             strstr(response, "DOWNLOAD") ||
             strstr(response, "NO ANSWER") ||
 	    strstr(response, "NORMAL POWER DOWN")
@@ -839,12 +863,6 @@ error_t modemSendAtCommandPLUS(NetInterface *interface,const char_t *command, ch
         	 break;
          }
 
-         if(strstr(response, "ERROR")||
-            strstr(response, "0.0.0.0")){
-        	 error=ERROR_FROM_PPP_INTERFACE;
-        	 TRACE_DEBUG("AT response: %s", response);
-        	 break;
-         }
 
          //Status string received?
          if(strstr(response, "OK") ||
@@ -853,7 +871,7 @@ error_t modemSendAtCommandPLUS(NetInterface *interface,const char_t *command, ch
             strstr(response, "+HTTPREAD:") ||
             strstr(response, "NO CARRIER") ||
             strstr(response, "~!NO CARRIER") ||
-            //strstr(response, "ERROR") ||
+            strstr(response, "ERROR") ||
             strstr(response, "DOWNLOAD") ||
             strstr(response, "NO ANSWER") ||
 	    strstr(response, "NORMAL POWER DOWN")
@@ -872,24 +890,117 @@ error_t modemSendAtCommandPLUS(NetInterface *interface,const char_t *command, ch
          n = strlen(response);
       }
 
-        if (error==NO_ERROR){
-          error = pppReceiveAtCommand(interface, response , size - n);
+    }
+      if (error) return error;
 
-           if(strstr(response, str))
+      n=0;
+       //Loop as long as necessary
+      while(n < size)
+      {
+         //Wait for a response from the modem
+         error = pppReceiveAtCommand(interface, response + n, size - n);
+
+         //Check status code
+         if(error)
          {
+            //Exit immediately
+            break;
+         }
 
-            TRACE_DEBUG("AT response: %s\n", response);
+         if(strstr(response, str)){
+        	
+       
+
+            TRACE_DEBUG("AT PLUS MESSAGE: %s\n", response);
             //Exit immediately
 
+            break;
          }
+
+
+
+         //Update the length of the response
+         n = strlen(response);
+      
       }
-   }
 
    //Return status code
    return error;
 }
 
+error_t modemSendAtCommandHTTP(NetInterface *interface,const char_t *command, char_t *response, size_t size)
+{
+   error_t error;
+   size_t n;
 
+   //Debug message
+  
+   TRACE_DEBUG("AT command:  %s\n",command);
+  
+   //Send AT command
+   error = pppSendAtCommand(interface, command);
+    vTaskDelay(5);
+   //Check status code
+   if(!error)
+   {
+      //Size of the response modem_buffer
+      n = 0;
+
+      //Loop as long as necessary
+      while(n < size)
+      {
+         //Wait for a response from the modem
+         error = pppReceiveAtCommand(interface, response + n, size - n);
+
+         //Check status code
+         if(error)
+         {
+            //Exit immediately
+            break;
+         }
+
+
+         //Status string received?
+         if(strstr(response, "OK") ||
+            strstr(response, "CONNECT") ||
+            strstr(response, "RING") ||
+            strstr(response, "+HTTPREAD:") ||
+            strstr(response, "NO CARRIER") ||
+            strstr(response, "~!NO CARRIER") ||
+            strstr(response, "ERROR") ||
+            strstr(response, "DOWNLOAD") ||
+            strstr(response, "NO ANSWER") ||
+	    strstr(response, "NORMAL POWER DOWN")
+			)
+         {
+
+            TRACE_DEBUG("AT response: %s\n", response);
+            //Exit immediately
+
+            break;
+         }
+
+
+
+         //Update the length of the response
+         n = strlen(response);
+      }
+
+
+    
+    
+      char *token=strstr(response+n+3+1, "\r\n");
+    
+      
+      TRACE_DEBUG("AT HTTP MEX1:\n\r %s\n", token);
+      //token = strstr(token, "\r\n");
+      //TRACE_DEBUG("AT HTTP MEX2:\n\r %s\n", token);
+
+   }
+
+   //Return status code
+   return error;
+}
 
 void modemDeinit(){
 	error_t error;
