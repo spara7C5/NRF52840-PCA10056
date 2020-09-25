@@ -36,7 +36,6 @@
 #include "debug.h"
 
 
-
 #define SIM7000E
 //Application configuration
 //#define APP_PPP_PIN_CODE "1234"
@@ -62,8 +61,40 @@
 NetInterface *interface;
 uint32_t status_register = 0x0;
 
-char_t modem_buffer[2048] ={};
+char_t modem_buffer[4096] ={};
 char_t send_buffer[256] ={};
+char httpbincer[]="-----BEGIN CERTIFICATE-----\n\
+MIIFbjCCBFagAwIBAgIQC6tW9S/J9yHIw1v8WOnMPDANBgkqhkiG9w0BAQsFADBG\n\
+MQswCQYDVQQGEwJVUzEPMA0GA1UEChMGQW1hem9uMRUwEwYDVQQLEwxTZXJ2ZXIg\n\
+Q0EgMUIxDzANBgNVBAMTBkFtYXpvbjAeFw0yMDAxMTgwMDAwMDBaFw0yMTAyMTgx\n\
+MjAwMDBaMBYxFDASBgNVBAMTC2h0dHBiaW4ub3JnMIIBIjANBgkqhkiG9w0BAQEF\n\
+AAOCAQ8AMIIBCgKCAQEApFxnGvqYGUel320/nRE281GA6WAOVwY+Npl79AIz45bH\n\
+XcxNu+LeMEuGBvrl2EuccQJGXpCY8+sCzFRmcCZsMtTzUdj6R/QbWR7OFjf6Z6w1\n\
+AiKccc7iKlRUF/tWAuoLr1b6L9+JfAkJAUL35VV7/vIs9IZ8uWJDhEB2wU6rRZO+\n\
+2RBvHGM7oeBNda1/maukjLNYmJ+pxSnrsRTMh3dHUCxZ47h2UZhj2SWCPlW+SMsY\n\
+NM/JkURnzSy0lgq/woVeM5g4nOpWuljO1scJ0ZRbR3I+3JveGEd3sQi8e6HkWFtI\n\
+mGklhirXxE/t86GP86s+XbwnABIML12h09M3mTJqEwIDAQABo4IChjCCAoIwHwYD\n\
+VR0jBBgwFoAUWaRmBlKge5WSPKOUByeWdFv5PdAwHQYDVR0OBBYEFE1H1xvaOuX7\n\
+0DFAys411lS5yO+lMCUGA1UdEQQeMByCC2h0dHBiaW4ub3Jngg0qLmh0dHBiaW4u\n\
+b3JnMA4GA1UdDwEB/wQEAwIFoDAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUH\n\
+AwIwOwYDVR0fBDQwMjAwoC6gLIYqaHR0cDovL2NybC5zY2ExYi5hbWF6b250cnVz\n\
+dC5jb20vc2NhMWIuY3JsMCAGA1UdIAQZMBcwCwYJYIZIAYb9bAECMAgGBmeBDAEC\n\
+ATB1BggrBgEFBQcBAQRpMGcwLQYIKwYBBQUHMAGGIWh0dHA6Ly9vY3NwLnNjYTFi\n\
+LmFtYXpvbnRydXN0LmNvbTA2BggrBgEFBQcwAoYqaHR0cDovL2NydC5zY2ExYi5h\n\
+bWF6b250cnVzdC5jb20vc2NhMWIuY3J0MAwGA1UdEwEB/wQCMAAwggEEBgorBgEE\n\
+AdZ5AgQCBIH1BIHyAPAAdgDuS723dc5guuFCaR+r4Z5mow9+X7By2IMAxHuJeqj9\n\
+ywAAAW+2QhJbAAAEAwBHMEUCIQCBAIJ4tACBrdHwB4ZnGIGTy3/9FxuZ9GIoHgfX\n\
+5RjefQIgeXY+x7oWQmIShXCrBSdqeTYXrsxQcWE6ZpAyQxcsdUUAdgCHdb/nWXz4\n\
+jEOZX73zbv9WjUdWNv9KtWDBtOr/XqCDDwAAAW+2QhKqAAAEAwBHMEUCIBDMYim2\n\
+sF8eHpW1Z7/yQ1liTwa8IRSjidBd9ZVIwe6mAiEA7DPOTaRgc/cH3OzIGSu6dLae\n\
+e5F/YRkmC9TikWiWTC8wDQYJKoZIhvcNAQELBQADggEBAIIERQYarXyjBoi2yjhr\n\
+7WTjbsPLTUSUFVK2f+qckuDJfoX9bW1PLShve5R8WWgIBu4eZYyUDS+BzXXSV2wg\n\
+NscAL9TkxobI/N0HiI5iGtJuI8dVIsFSRMG9IWRz96/pqRcTMz5GlIhAurB3aR+S\n\
+MnwAYsrNBHG+rqgUwNVn0h2XoVJe3VxrV2QwTH5kzBwG/Ju1+Khqkvs+9/M3UrJg\n\
+qPGwissH0W8HgYWhKVISkN2ui55RgbHXQHYDX0uYgGK6iRMxHHlOR1vOqRgEvVGF\n\
+5g8CcK3EzritKaHkD6bf0pnSE/E7cjKXzgB4l+58dsNcIVo9YgID4xYGS6paetso\n\
+XHE=\n\
+-----END CERTIFICATE-----";
 
 
 error_t modemSendAtCommandPRE(NetInterface *interface,const char_t *command, char_t *response, size_t size, char* str);
@@ -234,6 +265,12 @@ error_t modemInit(NetInterface *interface)
 //	   return error;
 //   }
 //
+    error = modemSendAtCommand(interface, "ATE1V1\r", modem_buffer, sizeof(modem_buffer));  
+
+
+
+ 
+
 //   //Module identification
     error = modemSendAtCommand(interface, "ATI\r", modem_buffer, sizeof(modem_buffer));
 //    //Any error to report?
@@ -397,7 +434,6 @@ error_t modemInit(NetInterface *interface)
 
 
 
-
     error = modemSendAtCommand(interface, "AT+CGATT?\r", modem_buffer, sizeof(modem_buffer));  
 
     
@@ -488,13 +524,49 @@ error_t modemCall(NetInterface *interface)
 //    while((modemSendAtCommand(interface, "AT+HTTPINIT\r", modem_buffer, sizeof(modem_buffer)))!=NO_ERROR){
 //      modemSendAtCommand(interface,"AT+HTTPTERM\r",modem_buffer, sizeof(modem_buffer)); 
 //    };
-     
+
+
+
+    ////////// WRITE AND READ EXAMPLE ///////////////
+
+//    error = modemSendAtCommand(interface, "AT+CFSINIT\r", modem_buffer, sizeof(modem_buffer)); 
+//    error = modemSendAtCommand(interface, "AT+CFSWFILE=3,\"pippo.txt\",0,4,10000\r", modem_buffer, sizeof(modem_buffer)); 
+//    error = modemSendAtCommand(interface, "ciao", modem_buffer, sizeof(modem_buffer)); 
+//    error = modemSendAtCommand(interface, "AT+CFSRFILE=3,\"pippo.txt\",0,4,10000\r", modem_buffer, sizeof(modem_buffer)); 
+//    while(1){}
+
+    ////////// END WRITE AND READ EXAMPLE ///////////////
+
+
+
     //////////////// END HTTP CONFIG ///////////////////////////////////////
 
-    ////////// SIM7000 HTTP GET /////////////////////////////////
-    error = modemSendAtCommand(interface, "AT+SHCONF=\"URL\",\"http://httpbin.org\"\r", modem_buffer, sizeof(modem_buffer)); 
+    //////// HTTP-S  PRELIMINARY FUNCTION ///////////////
+    //memset(httpbincer,0)
+    
+    error = modemSendAtCommand(interface, "AT+CFSGFRS?\r", modem_buffer, sizeof(modem_buffer)); 
+    error = modemSendAtCommand(interface, "AT+CFSINIT\r", modem_buffer, sizeof(modem_buffer)); 
+    error = modemSendAtCommand(interface, "AT+CFSWFILE=?\r", modem_buffer, sizeof(modem_buffer)); 
+    memset(send_buffer,0,256);
+    sprintf(&send_buffer[0],"AT+CFSWFILE=3,\"httpbin_root_ca.cer\",0,%u,10000\r",strlen(httpbincer));
+    error = modemSendAtCommand(interface, send_buffer, modem_buffer, sizeof(modem_buffer)); 
+    error = modemSendAtCommand(interface, httpbincer, modem_buffer, sizeof(modem_buffer)); 
+    error = modemSendAtCommand(interface, "AT+CFSTERM\r", modem_buffer, sizeof(modem_buffer));
+    //error = modemSendAtCommand(interface, "AT+CSSLCFG=\"sslversion\",1,3\r", modem_buffer, sizeof(modem_buffer));
+    error = modemSendAtCommand(interface, "AT+CSSLCFG=\"convert\",2,\"httpbin_root_ca.cer\"\r", modem_buffer, sizeof(modem_buffer));
+
+
+
+    /////////////////////////////////////////////////////////////
+
+    ////////// SIM7070 HTTP GET /////////////////////////////////
+    
+    error = modemSendAtCommand(interface, "AT+SHSSL=1,\"httpbin_root_ca.cer\"\r", modem_buffer, sizeof(modem_buffer));
+    error = modemSendAtCommand(interface, "AT+SHCONF=\"URL\",\"https://httpbin.org\"\r", modem_buffer, sizeof(modem_buffer)); 
     error = modemSendAtCommand(interface, "AT+SHCONF=\"BODYLEN\",1024\r", modem_buffer, sizeof(modem_buffer)); 
     error = modemSendAtCommand(interface, "AT+SHCONF=\"HEADERLEN\",350\r", modem_buffer, sizeof(modem_buffer)); 
+    error = modemSendAtCommand(interface, "AT+SHCONF=\"TIMEOUT\",30\r", modem_buffer, sizeof(modem_buffer));
+    error = modemSendAtCommand(interface, "AT+SHCONN\r", modem_buffer, sizeof(modem_buffer));
     error = modemSendAtCommand(interface, "AT+SHCONN\r", modem_buffer, sizeof(modem_buffer)); 
     error = modemSendAtCommand(interface, "AT+SHSTATE?\r", modem_buffer, sizeof(modem_buffer)); 
     error = modemSendAtCommand(interface, "AT+SHCHEAD\r", modem_buffer, sizeof(modem_buffer)); 
@@ -510,32 +582,42 @@ error_t modemCall(NetInterface *interface)
       cnt++;
     }
     uint16_t getlen=atoi(token);
+    memset(send_buffer,0,256);
     sprintf(&send_buffer[0],"AT+SHREAD=0,%u\r",getlen);
     error = modemSendAtCommandHTTP(interface, send_buffer, modem_buffer, sizeof(modem_buffer));
     error = modemSendAtCommand(interface, "AT+SHDISC\r", modem_buffer, sizeof(modem_buffer));
-    ////////// END SIM7000 HTTP GET /////////////////////////////
+    ////////// END SIM7070 HTTP GET /////////////////////////////
 
 
-    /////////////// HTTP GET //////////////////////
-//    error = modemSendAtCommand(interface, "AT+HTTPPARA=\"URL\",\"https:www.google.it\"\r", modem_buffer, sizeof(modem_buffer));  
-//    error = modemSendAtCommand(interface, "AT+HTTPPARA=\"CID\",1\r", modem_buffer, sizeof(modem_buffer)); 
-//    error = modemSendAtCommand(interface,"AT+HTTPACTION=0\r",modem_buffer , sizeof(modem_buffer)); 
-/////https://webhook.site/6aeaffa1-b48c-497b-b682-719b5eb57e9f
-    ////// END HTTP GET ////////////////////
 
-    ///////////////////// HTTP POST///////////////////////////
-//    error = modemSendAtCommand(interface, "AT+HTTPPARA=\"URL\",\"test.carion.it\"\r", modem_buffer, sizeof(modem_buffer));  
-//    error = modemSendAtCommand(interface, "AT+HTTPPARA=\"CID\",1\r", modem_buffer, sizeof(modem_buffer)); 
-//    memset(post_buffer,0,256);
-//    sprintf(&post_buffer[0],"POST /test HTTP/1.1\r\nHost: 10.46.101.47\r\nContent-Type: application/x-www-form-urlencoded\r\nContent-Length: 4\r\n\r\nciaone");
-//    uint8_t l=strlen(post_buffer);
-//    sprintf(&modem_buffer[0],"AT+HTTPDATA=%u,10000\r",l);
-//    while((modemSendAtCommandPRE(interface,modem_buffer , modem_buffer, sizeof(modem_buffer), "DOWNLOAD"))!=NO_ERROR)
-//    {
-//    vTaskDelay(1000);
-//    }; 
-//    error = modemSendAtCommand(interface,post_buffer , modem_buffer, l); 
-//    error = modemSendAtCommandPLUS(interface,"AT+HTTPACTION=1\r",modem_buffer , sizeof(modem_buffer),"HTTPACTION"); 
+    ///////////////////// SIM7070 HTTP POST///////////////////////////
+//    error = modemSendAtCommand(interface, "AT+CSSLCFG=\"sslversion\",1,3\r", modem_buffer, sizeof(modem_buffer));
+//    error = modemSendAtCommand(interface, "AT+SHSSL=1,\"\"\r", modem_buffer, sizeof(modem_buffer));
+//    error = modemSendAtCommand(interface, "AT+SHCONF=\"URL\",\"http://httpbin.org\"\r", modem_buffer, sizeof(modem_buffer)); 
+//    error = modemSendAtCommand(interface, "AT+SHCONF=\"BODYLEN\",1024\r", modem_buffer, sizeof(modem_buffer)); 
+//    error = modemSendAtCommand(interface, "AT+SHCONF=\"HEADERLEN\",350\r", modem_buffer, sizeof(modem_buffer)); 
+//    error = modemSendAtCommand(interface, "AT+SHCONN\r", modem_buffer, sizeof(modem_buffer)); 
+//    error = modemSendAtCommand(interface, "AT+SHSTATE?\r", modem_buffer, sizeof(modem_buffer)); 
+//    error = modemSendAtCommand(interface, "AT+SHCHEAD\r", modem_buffer, sizeof(modem_buffer)); 
+//    error = modemSendAtCommand(interface, "AT+SHAHEAD=\"Content-Type\",\"application/xwww-form-urlencoded\"\r", modem_buffer, sizeof(modem_buffer)); 
+//    error = modemSendAtCommand(interface, "AT+SHAHEAD=\"Cache-control\",\"no-cache\"\r", modem_buffer, sizeof(modem_buffer)); 
+//    error = modemSendAtCommand(interface, "AT+SHAHEAD=\"Connection\",\"keep-alive\"\r", modem_buffer, sizeof(modem_buffer)); 
+//    error = modemSendAtCommand(interface, "AT+SHAHEAD=\"Accept\",\"*/*\"\r", modem_buffer, sizeof(modem_buffer)); 
+//    error = modemSendAtCommand(interface, "AT+SHCPARA\r", modem_buffer, sizeof(modem_buffer)); 
+//    error = modemSendAtCommand(interface, "AT+SHPARA=\"product\",\"apple\"\r", modem_buffer, sizeof(modem_buffer));
+//    error = modemSendAtCommand(interface, "AT+SHPARA=\"price\",\"1\"\r", modem_buffer, sizeof(modem_buffer));
+//    error = modemSendAtCommandPLUS(interface, "AT+SHREQ=\"/post\",3\r", modem_buffer, sizeof(modem_buffer),"SHREQ");
+
+//    char *token=strtok(modem_buffer, ",");
+//    uint8_t cnt=1;
+//    while(cnt<2+1){
+//      token = strtok(NULL, ",");
+//      cnt++;
+//    }
+//    uint16_t getlen=atoi(token);
+//    sprintf(&send_buffer[0],"AT+SHREAD=0,%u\r",getlen);
+//    error = modemSendAtCommandHTTP(interface, send_buffer, modem_buffer, sizeof(modem_buffer));
+//    error = modemSendAtCommand(interface, "AT+SHDISC\r", modem_buffer, sizeof(modem_buffer));
 
     ////////// END HTTP POST /////////////////////////////
 
@@ -907,7 +989,8 @@ error_t modemSendAtCommandPLUS(NetInterface *interface,const char_t *command, ch
             break;
          }
 
-         if(strstr(response, str)){
+         if(strstr(response, str) ||
+         strstr(response, "ERROR")){
         	
        
 

@@ -51,7 +51,7 @@ struct _PppContext;
 
 //TX buffer size
 #ifndef PPP_TX_BUFFER_SIZE
-   #define PPP_TX_BUFFER_SIZE 4096
+   #define PPP_TX_BUFFER_SIZE 4096*2
 #elif (PPP_TX_BUFFER_SIZE < 3006)
    #error PPP_TX_BUFFER_SIZE parameter is not valid
 #endif
